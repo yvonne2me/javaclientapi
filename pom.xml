@@ -3,10 +3,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.trustev</groupId>
-	<artifactId>trustevapi</artifactId>
+	<artifactId>trustev-java</artifactId>
 	<packaging>jar</packaging>
 	<version>2.0.0</version>
-	<name>trustev-integration</name>
+	<name>trustev-java</name>
 	<url>https://github.com/Trustev/java</url>
 	<dependencies>
 		<dependency>
@@ -69,10 +69,20 @@
 		<artifactId>oss-parent</artifactId>
 		<version>7</version>
 	</parent>
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
 	<scm>
-		<url>scm:git:git@github.com:Trustev/java.git</url>
-		<connection>scm:git:git@github.com:Trustev/java.git</connection>
-		<developerConnection>scm:git:git@github.com:Trustev/java.git</developerConnection>
+		<url>scm:git:git@github.com:Trustev/javaclientapi.git</url>
+		<connection>scm:git:git@github.com:Trustev/javaclientapi.git</connection>
+		<developerConnection>scm:git:git@github.com:Trustev/javaclientapi.git</developerConnection>
 	</scm>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -165,8 +175,9 @@
 					</execution>
 				</executions>
 				<configuration>
-					<serverId>sonatype-nexus-staging</serverId>
+					<serverId>ossrh</serverId>
 					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>true</autoReleaseAfterClose>
 				</configuration>
 			</plugin>
 		</plugins>
