@@ -51,9 +51,6 @@ Once you have supplied the trustev.properties file you can make a decision by in
 		myCase.setCustomer(customer);
 		// set other values as needed, the Case object reflects exactly the objects in http://app.trustev.com/Help
 		
-		// save the case
-		myCase.Save()
-		
 		// get the decision on the case
 		Decision decision = myCase.MakeDecision();
 		if (decision.getResult() == DecisionResult.Pass) {
