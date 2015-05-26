@@ -16,6 +16,25 @@ Java wrapper for Trustev API
   </dependency>
 ```
 
+
+##SSL Certification Import
+The Trustev API https://app.trustev.com uses a wildcard certificate.  Languages such as Java and PHP are more strict with SSL certifications and do not by default validate wildcard certificates.
+To get around this you will need to manually import the certficate as a trusted certificate into the JVM.  To do this download the certificate from Firefox or another browser.
+
+In Firefox, navigate to https://app.trustev.com/Help
+Click on the padlock in the address bar
+Click on "More Information" button
+Click on "Security" Tab
+Click on "View Certificate" button
+Click on "Details" tab
+Click on "Export" button
+In the Save as dialog, save the file under the name C:\Trustev.crt using type "X.509 Certificate (PEM)"
+Open a command line window in the folder where the Trustev.crt file was saved
+Run the following command "keytool -import -alias trustev -file Trustev.cer -keystore Trustev.jks"
+Follow the prompts, you will be prompted to enter a password.  For the purposes of this example assume the password is changeme
+Update the startup JVM args of you java environment to use the keystore created.  The following JVM arguments should be passed -Djavax.net.ssl.trustStore=C:\Trustev.jks -Djavax.net.ssl.trustStorePassword=changeme
+
+
 ##Usage
 
 #### Supply API Keys
