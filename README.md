@@ -9,11 +9,11 @@ Java wrapper for Trustev API
 ##Installation
 - For Maven, it is available in the Central Repository therefore just add the following dependency to your pom.xml file
 ```xml
-    <dependency>
-      <groupId>com.trustev</groupId>
-      <artifactId>trustev-integration</artifactId>
-      <version>2.0.0</version>
-    </dependency>
+  <dependency>
+	<groupId>com.trustev</groupId>
+  	<artifactId>trustev-java</artifactId>
+  	<version>2.0.0</version>
+  </dependency>
 ```
 
 ##Usage
