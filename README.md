@@ -12,7 +12,7 @@ Java wrapper for Trustev API
   <dependency>
 	<groupId>com.trustev</groupId>
   	<artifactId>trustev-java</artifactId>
-  	<version>2.0.0</version>
+  	<version>2.0.1</version>
   </dependency>
 ```
 
@@ -59,7 +59,7 @@ Once you have supplied the trustev.properties file you can make a decision by in
 		UUID sessionId = UUID.fromString("f9b21183-a88e-4454-992a-febe98658384");  // SessionId created by trustev.js inclusion
 		
 		// instantiate a Case object
-		Case myCase = new Case(sessionId);
+		Case myCase = new Case(sessionId, caseNumber);
 		
 		// set initial values
 		myCase.setCaseNumber(caseNumber);
