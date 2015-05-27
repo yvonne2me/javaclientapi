@@ -47,11 +47,12 @@ public class Case extends BaseObject<Case> {
 	 * @throws TrustevApiException If the sessionId passed in is null
 	 */
 	@JsonCreator
-	public Case(@JsonProperty("SessionId")UUID sessionId) throws TrustevApiException {
+	public Case(@JsonProperty("SessionId")UUID sessionId, @JsonProperty("CaseNumber") String caseNumber) throws TrustevApiException {
 		if (sessionId == null) {
 			throw new TrustevApiException("Session ID cannot be null");
 		}
 		this.sessionId = sessionId;
+		this.caseNumber = caseNumber;
 	}
 	
 	/**
@@ -67,15 +68,6 @@ public class Case extends BaseObject<Case> {
 	 */
 	public String getCaseNumber() {
 		return caseNumber;
-	}
-	
-	/**
-	 * 
-	 * @param caseNumber The CaseNumber is chosen by the Merchant to uniquely identify the Trustev Case. It can be an alphanumeric string of your liking. Please see our Testing Guide to find out how to use the CaseNumber to get expected Trustev Decisions during Integration.
-	 */
-	@JsonProperty("CaseNumber")
-	public void setCaseNumber(String caseNumber) {
-		this.caseNumber = caseNumber;
 	}
 	
 	/**

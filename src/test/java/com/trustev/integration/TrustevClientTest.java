@@ -64,10 +64,9 @@ public class TrustevClientTest extends TestCase {
 	public void testGetDecision() throws TrustevApiException {
 		String caseNumber = "GetDecision" + (new Date()).toString();
 		UUID sessionId = UUID.fromString("f9b21183-a88e-4454-992a-febe98658384");
-		Case myCase = new Case(sessionId);
+		Case myCase = new Case(sessionId, caseNumber);
 		
 		// set initial values
-		myCase.setCaseNumber(caseNumber);
 		myCase.setTimestamp(new Date());
 		Customer customer = new Customer();
 		customer.setFirstName("Gene");
@@ -87,10 +86,9 @@ public class TrustevClientTest extends TestCase {
 	public void testUpdateCase() throws TrustevApiException {
 		String caseNumberBeforeSave = "CaseNumberBeforeSave" + (new Date()).toString();
 		UUID sessionId = UUID.fromString("f9b21183-a88e-4454-992a-febe98658384");
-		Case myCase = new Case(sessionId);
+		Case myCase = new Case(sessionId, caseNumberBeforeSave);
 		
 		// set initial values
-		myCase.setCaseNumber(caseNumberBeforeSave);
 		myCase.setTimestamp(new Date());
 		Customer customer = new Customer();
 		customer.setFirstName("Freddy");
@@ -113,8 +111,6 @@ public class TrustevClientTest extends TestCase {
 		Assert.assertEquals("Fraud", retrievedCase.getCustomer().getLastName());
 		
 		// update values in the case and save
-		String caseNumberAfterSave = "CaseNumberAfterSave"  + (new Date()).toString();;
-		retrievedCase.setCaseNumber(caseNumberAfterSave);
 		retrievedCase.getCustomer().setFirstName("Frank");
 		retrievedCase.Save();
 		retrievedCase = null;
@@ -123,7 +119,6 @@ public class TrustevClientTest extends TestCase {
 		Case retrievedCaseAfterSave = Case.Find(id);
 		Assert.assertEquals(id,retrievedCaseAfterSave.getId());
 		Assert.assertEquals(sessionId,retrievedCaseAfterSave.getSessionId());
-		Assert.assertEquals(caseNumberAfterSave, retrievedCaseAfterSave.getCaseNumber());
 		Assert.assertEquals("Frank", retrievedCaseAfterSave.getCustomer().getFirstName());
 		Assert.assertEquals("Fraud", retrievedCaseAfterSave.getCustomer().getLastName());
 		
@@ -135,12 +130,11 @@ public class TrustevClientTest extends TestCase {
 	
 	@Test
 	public void testCustomerEndpoint() throws TrustevApiException {
-		UUID sessionId = UUID.fromString("f9b21183-a88e-4454-992a-febe98658384");
-		Case myCase = new Case(sessionId);
-		
+		UUID sessionId = UUID.fromString("f9b21183-a88e-4454-992a-febe98658384");	
 		String caseNumberBeforeSave = "CustomerEndpointTest" + (new Date()).toString();
+		
+		Case myCase = new Case(sessionId, caseNumberBeforeSave);
 		// set initial values
-		myCase.setCaseNumber(caseNumberBeforeSave);
 		myCase.setTimestamp(new Date());
 		Assert.assertNull(myCase.getId());
 		myCase.Save();
@@ -179,10 +173,9 @@ public class TrustevClientTest extends TestCase {
 	public void testPaymentEndpoint() throws TrustevApiException {
 		String caseNumberBeforeSave = "TestPaymentEndpoint" + (new Date()).toString();
 		UUID sessionId = UUID.fromString("f9b21183-a88e-4454-992a-febe98658384");
-		Case myCase = new Case(sessionId);
+		Case myCase = new Case(sessionId, caseNumberBeforeSave);
 		
 		// set initial values
-		myCase.setCaseNumber(caseNumberBeforeSave);
 		myCase.setTimestamp(new Date());
 		Assert.assertNull(myCase.getId());
 		myCase.Save();

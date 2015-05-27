@@ -5,7 +5,6 @@ import java.util.Date;
 
 import javax.ws.rs.core.MediaType;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 
@@ -103,8 +102,8 @@ abstract class BaseObject<T> {
 		if (obj == this)
 			return true;
 		BaseObject rhs = (BaseObject) obj;
-		if (this.getId() == rhs.getId())
-			return true;
-		return EqualsBuilder.reflectionEquals(this, obj, false);
+		if (this.getId() == null)
+			return false;
+		return this.getId().equals(rhs.getId());
 	}
 }
