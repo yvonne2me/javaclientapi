@@ -3,8 +3,8 @@
 Java wrapper for Trustev API
 
 ##Getting Started
-- If you are not familiar with Trustev, start with our [Developer Portal](http://developers.trustev.com/).
-- Check out our [API Documentation](http://developers.trustev.com/#apioverview).
+- If you are not familiar with Trustev, start with our [Developer Portal](http://www.trustev.com/developers).
+- Check out our [API Documentation](http://www.trustev.com/developers#apioverview).
 
 ##Installation
 - For Maven, it is available in the Central Repository therefore just add the following dependency to your pom.xml file
