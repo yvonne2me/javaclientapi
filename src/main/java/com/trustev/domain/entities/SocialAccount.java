@@ -1,14 +1,10 @@
-package com.trustev.integration;
+package com.trustev.domain.entities;
 
-import java.util.Collection;
 import java.util.Date;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.GenericType;
 
 /**
  * Social media account for a customer
@@ -17,7 +13,7 @@ import com.sun.jersey.api.client.GenericType;
  *
  */
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
-public class SocialAccount extends ChildObject<SocialAccount> {
+public class SocialAccount extends BaseObject {
 	
 	private Integer socialId;
 	private SocialNetworkType type;
@@ -181,50 +177,5 @@ public class SocialAccount extends ChildObject<SocialAccount> {
 	@JsonProperty("Timestamp")
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
-	}
-	
-	/**
-	 * Adds the SocialAccount to the customer on a previously saved Case. 
-	 * 
-	 * @param caseId The case id of the case to save the social account against
-	 * @throws TrustevApiException
-	 */
-	@Override
-	public void SaveForCase(String caseId) throws TrustevApiException {
-		if (this.getId() == null) {
-			String path = "case/{caseId}/customer/socialaccount".replace("{caseId}",caseId);
-			this.id = callApiMethodFor(path, "POST").id;
-		}
-		else {
-			String path = "case/{caseId}/customer/socialaccount/{id}".replace("{caseId}",caseId).replace("{id}", this.id);
-			this.id = callApiMethodFor(path, "PUT").id;
-		}
-	}
-	
-	/**
-	 * Finds a single SocialAccount that is attached to a previously saved Case
-	 * 
-	 * @param caseId The case id of the case that the SocialAccount is attached to
-	 * @param id The id of the SocialAccount to be retrieved
-	 * @return A SocialAccount object
-	 * @throws TrustevApiException
-	 */
-	public static SocialAccount Find(String caseId, String id) throws TrustevApiException {
-		String path = "case/{caseId}/customer/socialaccount/{id}".replace("{caseId}",caseId).replace("{id}",id);
-		return (SocialAccount) callApiMethodFor(path, null, SocialAccount.class, "GET");	
-	}
-	
-	/**
-	 * Finds all of the SocialAccounts attached to a previously saved Case
-	 * 
-	 * @param caseId The case id of the previously saved Trustev Case
-	 * @return A collection of SocialAccount objects
-	 * @throws TrustevApiException
-	 */
-	public static Collection<SocialAccount> FindAll(String caseId) throws TrustevApiException {
-		String path = "case/{caseId}/customer/socialaccount".replace("{caseId}",caseId);
-		GenericType<Collection<SocialAccount>> type = new GenericType<Collection<SocialAccount>>(){};
-		ClientResponse response = callApiMethod(path, null, "GET");
-		return response.getEntity(type);
 	}
 }

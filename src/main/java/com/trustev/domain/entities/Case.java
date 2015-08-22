@@ -1,4 +1,4 @@
-package com.trustev.integration;
+package com.trustev.domain.entities;
 
 import java.util.Collection;
 import java.util.Date;
@@ -8,6 +8,8 @@ import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+
+import com.trustev.domain.exceptions.TrustevApiException;
 
 /**
  * Case object is the top level object in the trustev API.  Decisions are made by instantiating a Case object, populating the values and calling the MakeDecision method
@@ -38,7 +40,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  *
  */
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
-public class Case extends BaseObject<Case> {
+public class Case extends BaseObject{
 	
 	
 	/**
@@ -49,7 +51,7 @@ public class Case extends BaseObject<Case> {
 	@JsonCreator
 	public Case(@JsonProperty("SessionId")UUID sessionId, @JsonProperty("CaseNumber") String caseNumber) throws TrustevApiException {
 		if (sessionId == null) {
-			throw new TrustevApiException("Session ID cannot be null");
+			throw new TrustevApiException(400, "Session ID cannot be null");
 		}
 		this.sessionId = sessionId;
 		this.caseNumber = caseNumber;
@@ -152,22 +154,6 @@ public class Case extends BaseObject<Case> {
 		this.timestamp = timestamp;
 	}
 	
-	/**
-	 * Makes an overall decision on the case.  If the case has not yet been saved then it is implicitly saved.
-	 * 
-	 * @return A Decision object representing the overall decision
-	 * @throws TrustevApiException
-	 */
-	@JsonIgnore()
-	public Decision MakeDecision() throws TrustevApiException {
-		// if it hasn't been saved then save before getting decision
-		if (this.getId() == null) {
-			Save();
-		}
-		String path = String.format("Decision/%1$s", this.getId());
-		return (Decision) callApiMethodFor(path, null, Decision.class, "GET");	
-	}
-	
 	private UUID sessionId;
 	
 	private String caseNumber;
@@ -181,34 +167,4 @@ public class Case extends BaseObject<Case> {
 	private Collection<Payment> payments;
 	
 	private Date timestamp;
-
-	/**
-	 * Saves the case.  If the case has not previously been saved then it creates it as a new case, if the case has been saved
-	 * and therefore has an id then the previous case is updated with new values
-	 * @throws TrustevApiException
-	 */
-	public void Save() throws TrustevApiException {
-		if (this.getId() == null) {
-			// id is null so its an add
-			this.id = callApiMethodFor("Case", "POST").id;	
-		}
-		else {
-			// id is not null so its a save
-			String path = "Case/{id}".replace("{id}", this.getId());
-			callApiMethodFor(path, "PUT");	
-		}
-		
-	}
-
-	/**
-	 * Retrieves a previously saved case.
-	 * 
-	 * @param id The case id of the case to retrieve
-	 * @return A Case object representing the previously saved case
-	 * @throws TrustevApiException
-	 */
-	public static Case Find(String id) throws TrustevApiException {
-		String path = "Case/{id}".replace("{id}", id);
-		return (Case) callApiMethodFor(path, null, Case.class, "GET");	
-	}
 }

@@ -1,4 +1,4 @@
-package com.trustev.integration;
+package com.trustev.domain.entities;
 
 import java.util.Date;
 
@@ -13,7 +13,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  *
  */
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
-public class CaseStatus extends ChildObject<CaseStatus> {
+public class CaseStatus extends BaseObject {
 	
 	private CaseStatusType status;
 	private String comment;
@@ -75,30 +75,5 @@ public class CaseStatus extends ChildObject<CaseStatus> {
 	@JsonProperty("Timestamp")
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
-	}
-	
-	/**
-	 * Adds the CaseStatus to a previously saved Case. 
-	 * 
-	 * @param caseId The case id of the case to save the email against
-	 * @throws TrustevApiException
-	 */
-	@Override
-	public void SaveForCase(String caseId) throws TrustevApiException {
-		String path = "case/{caseId}/status".replace("{caseId}",caseId);
-		this.id = callApiMethodFor(path, "POST").id;	
-	}
-
-	/**
-	 * Finds a CaseStatus for a previously saved Case
-	 * 
-	 * @param caseId The case id of the previously saved case
-	 * @param id The id of the CaseStatus to be retrieved
-	 * @return A CaseStatus object
-	 * @throws TrustevApiException
-	 */
-	public static CaseStatus Find(String caseId, String id) throws TrustevApiException {
-		String path = "case/{caseId}/status/{id}".replace("{caseId}",caseId).replace("{id}",id);
-		return (CaseStatus) callApiMethodFor(path, null, CaseStatus.class, "GET");	
 	}
 }

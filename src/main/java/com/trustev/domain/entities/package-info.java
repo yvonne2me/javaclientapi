@@ -34,4 +34,4 @@
  * </pre>
  * 
  */
-package com.trustev.integration;
+package com.trustev.domain.entities;

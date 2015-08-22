@@ -1,4 +1,4 @@
-package com.trustev.integration;
+package com.trustev.domain.entities;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -15,15 +15,13 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  *
  */
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
-public class Transaction extends ChildObject<Transaction> {
-	
-	
+public class Transaction extends BaseObject {
 	
 	/**
 	 * 
 	 * @return Total Value of the Transaction.
 	 */
-	public BigDecimal getTotalTransactionValue() {
+	public double getTotalTransactionValue() {
 		return totalTransactionValue;
 	}
 	
@@ -32,7 +30,7 @@ public class Transaction extends ChildObject<Transaction> {
 	 * @param totalTransactionValue Total Value of the Transaction.
 	 */
 	@JsonProperty("TotalTransactionValue")
-	public void setTotalTransactionValue(BigDecimal totalTransactionValue) {
+	public void setTotalTransactionValue(double totalTransactionValue) {
 		this.totalTransactionValue = totalTransactionValue;
 	}
 	
@@ -111,7 +109,7 @@ public class Transaction extends ChildObject<Transaction> {
 		this.items = items;
 	}
 	
-	private BigDecimal totalTransactionValue;
+	private double totalTransactionValue;
 	
 	private String currency;
 	
@@ -120,35 +118,5 @@ public class Transaction extends ChildObject<Transaction> {
 	private Collection<Address> addresses;
 	
 	private Collection<TransactionItem> items;
-	
-	/**
-	 * Adds the Transaction to a previously saved Case. 
-	 * 
-	 * @param caseId The case id of the case to save against
-	 * @throws TrustevApiException
-	 */
-	@Override
-	public void SaveForCase(String caseId) throws TrustevApiException {
-		if (this.getId() == null) {
-			String path = "case/{caseId}/transaction".replace("{caseId}",caseId);
-			this.id = callApiMethodFor(path, "POST").id;
-		}
-		else {
-			String path = "case/{caseId}/transaction".replace("{caseId}",caseId);
-			callApiMethodFor(path, "PUT");
-		}
-	}
-	
-	/**
-	 * Finds a Transaction that is attached to a previously saved Case
-	 * 
-	 * @param caseId The case id of the previously saved Case
-	 * @return The Transaction object
-	 * @throws TrustevApiException
-	 */
-	public static Transaction Find(String caseId) throws TrustevApiException {
-		String path = "case/{caseId}/transaction".replace("{caseId}",caseId);
-		return (Transaction) callApiMethodFor(path, null, Transaction.class, "GET");	
-	}
 	
 }

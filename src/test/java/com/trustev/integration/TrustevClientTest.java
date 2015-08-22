@@ -1,232 +1,792 @@
 package com.trustev.integration;
 
 
+import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.Date;
+import java.util.LinkedList;
 import java.util.UUID;
-
-
-
-
 
 import org.junit.Test;
 
-import uk.co.jemos.podam.api.PodamFactory;
-import uk.co.jemos.podam.api.PodamFactoryImpl;
-import junit.framework.Assert;
+import com.trustev.domain.entities.*;
+import com.trustev.domain.exceptions.TrustevApiException;
+import com.trustev.web.ApiClient;
 import junit.framework.TestCase;
 
 public class TrustevClientTest extends TestCase {
-
-	@Test
-	public void testGetToken() throws TrustevApiException {
-		BaseObject.GetApiTokenId();
-		Assert.assertNotNull(BaseObject.apiTokenExpires);
-		Assert.assertNotNull(BaseObject.apiTokenId);
-		Assert.assertTrue(BaseObject.apiTokenExpires.after(new Date()));
-	}
-	
-	@Test
-	public void testGetTokenBadPassword() {
-		String goodPassword = null;
-		try {
-			new GetTokenRequest();
-			goodPassword = GetTokenRequest.passWord;
-			// fake a bad password
-			GetTokenRequest.passWord = "BadPassword";
-			// clear the API Token so that it forces a new create of the Api Token with the bad password
-			BaseObject.apiTokenExpires = null;
-			BaseObject.apiTokenId = null;
-			BaseObject.GetApiTokenId();
-			Assert.fail("Exeption was not thrown");
-		} catch (TrustevApiException e) {
-			Assert.assertEquals("Your Password and |UserNameHash do not match our records. The problem is either related to an incorrect password, secret or due to incorrect hashing", e.getMessage());
-		} finally {
-			// need to replace the good password so subsequent tests in the test run don't fail
-			GetTokenRequest.passWord = goodPassword;
-		}
-	}
 	
 	@Test
 	public void testAddCase() throws TrustevApiException {
-		// generate random case info
-		PodamFactory factory = new PodamFactoryImpl();
-		Case myCase = factory.manufacturePojo(Case.class);
-		//myCase.setSessionId(UUID.fromString("f9b21183-a88e-4454-992a-febe98658384"));
-		Assert.assertNotNull(myCase.getCaseNumber());
-		Assert.assertNull(myCase.getId());
-		myCase.Save();
-		Assert.assertNotNull(myCase.getId());
+		
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+		
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Customer customer = new Customer();
+		customer.setFirstName("John");
+		customer.setLastName("Doe");
+		kase.setCustomer(customer);
+		
+		Case responseCase = ApiClient.postCase(kase);
+		
+		assertNotNull(responseCase.getId());
+		assertNotNull(responseCase.getCustomer());
+		assertNotNull(responseCase.getCustomer().getId());
+		assertEquals("John", responseCase.getCustomer().getFirstName());
+		assertEquals("Doe", responseCase.getCustomer().getLastName());
 	}
 	
+	@Test
+	public void testGetCase() throws TrustevApiException {
+		
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+		
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Customer customer = new Customer();
+		customer.setFirstName("John");
+		customer.setLastName("Doe");
+		kase.setCustomer(customer);
+		
+		Case responseCase = ApiClient.postCase(kase);
+		
+		Case getCase = ApiClient.getCase(responseCase.getId());
+		
+		assertNotNull(getCase.getId());
+		assertNotNull(getCase.getCustomer());
+		assertNotNull(getCase.getCustomer().getId());
+		assertEquals("John", getCase.getCustomer().getFirstName());
+		assertEquals("Doe", getCase.getCustomer().getLastName());
+	}
 	
 	@Test
-	public void testGetDecision() throws TrustevApiException {
-		String caseNumber = "GetDecision" + (new Date()).toString();
-		UUID sessionId = UUID.fromString("f9b21183-a88e-4454-992a-febe98658384");
-		Case myCase = new Case(sessionId, caseNumber);
+	public void testGetCaseIncorrectCaseId() throws TrustevApiException {
 		
-		// set initial values
-		myCase.setTimestamp(new Date());
-		Customer customer = new Customer();
-		customer.setFirstName("Gene");
-		customer.setLastName("Geniune");
-		myCase.setCustomer(customer);
-		Assert.assertNull(myCase.getId());
-		Assert.assertNotNull(myCase.getCaseNumber());
-		Assert.assertNull("Case has not yet been saved so id should be emtpy",myCase.getId());
-		
-		// get the decision on the case
-		Decision decision = myCase.MakeDecision();
-		Assert.assertNotNull(decision);
-		Assert.assertNotNull(decision.getResult());
+		int responseCode = 200;
+		try
+		{
+			//Initialize Client
+			ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+			
+			Case getCase = ApiClient.getCase(UUID.randomUUID().toString() + "|" + UUID.randomUUID().toString());
+		}
+		catch(TrustevApiException ex)
+		{
+			responseCode = ex.responseCode;
+		}
+		assertEquals(404, responseCode);
 	}
 	
 	@Test
 	public void testUpdateCase() throws TrustevApiException {
-		String caseNumberBeforeSave = "CaseNumberBeforeSave" + (new Date()).toString();
-		UUID sessionId = UUID.fromString("f9b21183-a88e-4454-992a-febe98658384");
-		Case myCase = new Case(sessionId, caseNumberBeforeSave);
 		
-		// set initial values
-		myCase.setTimestamp(new Date());
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+		
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Customer customer = new Customer();
-		customer.setFirstName("Freddy");
-		customer.setLastName("Fraud");
-		myCase.setCustomer(customer );
-		Assert.assertNull(myCase.getId());
-		Assert.assertNotNull(myCase.getCaseNumber());
-		Assert.assertNull("Case has not yet been saved so id should be emtpy",myCase.getId());
-		myCase.Save();
-		Assert.assertNotNull(myCase.getId());
-		String id = myCase.getId();
-		myCase = null;	// delete the case completely
+		customer.setFirstName("John");
+		customer.setLastName("Doe");
+		kase.setCustomer(customer);
 		
-		// retrieve the case and assert on values
-		Case retrievedCase = Case.Find(id);
-		Assert.assertEquals(id,retrievedCase.getId());
-		Assert.assertEquals(sessionId,retrievedCase.getSessionId());
-		Assert.assertEquals(caseNumberBeforeSave, retrievedCase.getCaseNumber());
-		Assert.assertEquals("Freddy", retrievedCase.getCustomer().getFirstName());
-		Assert.assertEquals("Fraud", retrievedCase.getCustomer().getLastName());
+		Case responseCase = ApiClient.postCase(kase);
+		customer.setFirstName("Joe");
+		responseCase.setCustomer(customer);
 		
-		// update values in the case and save
-		retrievedCase.getCustomer().setFirstName("Frank");
-		retrievedCase.Save();
-		retrievedCase = null;
 		
-		// retrieve the case again and assert values where changed
-		Case retrievedCaseAfterSave = Case.Find(id);
-		Assert.assertEquals(id,retrievedCaseAfterSave.getId());
-		Assert.assertEquals(sessionId,retrievedCaseAfterSave.getSessionId());
-		Assert.assertEquals("Frank", retrievedCaseAfterSave.getCustomer().getFirstName());
-		Assert.assertEquals("Fraud", retrievedCaseAfterSave.getCustomer().getLastName());
+		Case updateCase = ApiClient.updateCase(responseCase, responseCase.getId());
 		
-		// get the decision on the case
-		/*Decision decision = retrievedCaseAfterSave.MakeDecision();
-		Assert.assertNotNull(decision);
-		Assert.assertNotNull(decision.getResult());*/
+		assertNotNull(updateCase.getId());
+		assertNotNull(updateCase.getCustomer());
+		assertNotNull(updateCase.getCustomer().getId());
+		assertEquals("Joe", updateCase.getCustomer().getFirstName());
+		assertEquals("Doe", updateCase.getCustomer().getLastName());
 	}
 	
 	@Test
-	public void testCustomerEndpoint() throws TrustevApiException {
-		UUID sessionId = UUID.fromString("f9b21183-a88e-4454-992a-febe98658384");	
-		String caseNumberBeforeSave = "CustomerEndpointTest" + (new Date()).toString();
+	public void testGetDecision() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Customer customer = new Customer();
+		customer.setFirstName("John");
+		customer.setLastName("Doe");
+		kase.setCustomer(customer);
 		
-		Case myCase = new Case(sessionId, caseNumberBeforeSave);
-		// set initial values
-		myCase.setTimestamp(new Date());
-		Assert.assertNull(myCase.getId());
-		myCase.Save();
-		Assert.assertNotNull(myCase.getId());
-		Assert.assertNull(myCase.getCustomer());
-		String caseId = myCase.getId();
-		myCase = null;
+		Case responseCase = ApiClient.postCase(kase);
 		
-		// set the customer using the granular save
-		Customer myCustomer = new Customer();
-		myCustomer.setFirstName("Terry");
-		myCustomer.setLastName("TestCustomer");
-		Date dob = new Date(1990,1,1);
-		myCustomer.setDateOfBirth(dob);
-		myCustomer.SaveForCase(caseId);
-		myCustomer = null;
+		Decision decision = ApiClient.getDecision(responseCase.getId());
 		
-		// retrieve the case and assert on values
-		myCase = Case.Find(caseId);
-		Assert.assertNotNull(myCase);
-		Assert.assertNotNull(myCase.getCustomer());
-		Assert.assertEquals("Terry", myCase.getCustomer().getFirstName());
-		Assert.assertEquals("TestCustomer", myCase.getCustomer().getLastName());
-		Assert.assertEquals(dob,myCase.getCustomer().getDateOfBirth());
-		myCase = null;
-		
-		// test the customer finder
-		myCustomer = Customer.Find(caseId);
-		Assert.assertNotNull(myCustomer);
-		Assert.assertEquals("Terry", myCustomer.getFirstName());
-		Assert.assertEquals("TestCustomer", myCustomer.getLastName());
-		Assert.assertEquals(dob,myCustomer.getDateOfBirth());
+		assertNotNull(decision.getId());
+		assertNotNull(decision.getResult());
 	}
 	
 	@Test
-	public void testPaymentEndpoint() throws TrustevApiException {
-		String caseNumberBeforeSave = "TestPaymentEndpoint" + (new Date()).toString();
-		UUID sessionId = UUID.fromString("f9b21183-a88e-4454-992a-febe98658384");
-		Case myCase = new Case(sessionId, caseNumberBeforeSave);
+	public void testPostCustomer() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		
-		// set initial values
-		myCase.setTimestamp(new Date());
-		Assert.assertNull(myCase.getId());
-		myCase.Save();
-		Assert.assertNotNull(myCase.getId());
-		Assert.assertNull(myCase.getPayments());
-		String caseId = myCase.getId();
-		myCase = null;
+		Case responseCase = ApiClient.postCase(kase);
 		
-		// add first payment
-		Payment myCreditPayment = new Payment();
-		myCreditPayment.setBinNumber("123456");
-		myCreditPayment.setPaymentType(PaymentType.CreditCard);
-		myCreditPayment.SaveForCase(caseId);
-		String creditPaymentId = myCreditPayment.getId();
+		Customer customer = new Customer();
+		customer.setFirstName("John");
+		customer.setLastName("Doe");
 		
-		// add second payment
-		Payment myDebitPayment = new Payment();
-		myDebitPayment.setBinNumber("654321");
-		myDebitPayment.setPaymentType(PaymentType.DebitCard);
-		myDebitPayment.SaveForCase(caseId);
-		String debitPaymentId = myDebitPayment.getId();
+		Customer returnCustomer = ApiClient.postCustomer(responseCase.getId(), customer);
 		
-		// make sure that a second save updates the payment rather than adding a third
-		myDebitPayment.setBinNumber("654322");
-		myDebitPayment.SaveForCase(caseId);
-		
-		// retrieve the case and assert on values
-		myCase = Case.Find(caseId);
-		Assert.assertNotNull(myCase);
-		Assert.assertNotNull(myCase.getPayments());
-		Assert.assertEquals(2,myCase.getPayments().size());
-		Assert.assertTrue(myCase.getPayments().contains(myCreditPayment));
-		Assert.assertTrue(myCase.getPayments().contains(myDebitPayment));
-		myCase = null;
-		
-		// test the payment finder
-		Payment retrievedCreditPayment = Payment.Find(caseId, creditPaymentId);
-		Assert.assertNotNull(retrievedCreditPayment);
-		Assert.assertEquals("123456", retrievedCreditPayment.getBinNumber());
-		Assert.assertEquals(PaymentType.CreditCard, retrievedCreditPayment.getPaymentType());
-		Payment retrievedDebitPayment = Payment.Find(caseId, debitPaymentId);
-		Assert.assertNotNull(retrievedDebitPayment);
-		Assert.assertEquals("654322", retrievedDebitPayment.getBinNumber());
-		Assert.assertEquals(PaymentType.DebitCard, retrievedDebitPayment.getPaymentType());
-		
-		// test the payment findall
-		Collection<Payment> payments = Payment.FindAll(caseId);
-		Assert.assertNotNull(payments);
-		Assert.assertEquals(2,payments.size());
-		Assert.assertTrue(payments.contains(myCreditPayment));
-		Assert.assertTrue(payments.contains(myDebitPayment));
+		assertNotNull(returnCustomer.getId());
+		assertEquals("John", returnCustomer.getFirstName());
+		assertEquals("Doe", returnCustomer.getLastName());
 	}
+	
+	@Test
+	public void testUpdateCustomer() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Customer customer = new Customer();
+		customer.setFirstName("John");
+		customer.setLastName("Doe");
+		kase.setCustomer(customer);
+		
+		Case responseCase = ApiClient.postCase(kase);
+		
+		customer.setFirstName("Joe");
+		
+		Customer responseCustomer = ApiClient.updateCustomer(responseCase.getId(), customer);
+		
+		assertNotNull(responseCustomer.getId());
+		assertEquals("Joe", responseCustomer.getFirstName());
+		assertEquals("Doe", responseCustomer.getLastName());
+	}
+	
+	@Test
+	public void testGetCustomer() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Customer customer = new Customer();
+		customer.setFirstName("John");
+		customer.setLastName("Doe");
+		kase.setCustomer(customer);
+		
+		Case responseCase = ApiClient.postCase(kase);
+		
+		Customer responseCustomer = ApiClient.getCustomer(responseCase.getId());
+		
+		assertNotNull(responseCustomer.getId());
+		assertEquals("John", responseCustomer.getFirstName());
+		assertEquals("Doe", responseCustomer.getLastName());
+	}
+	
+	@Test
+	public void testPostTransaction() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Case responseCase = ApiClient.postCase(kase);
+		
+		Transaction transaction = new Transaction();
+		transaction.setTotalTransactionValue(10.99);
+		Transaction responseTransaction = ApiClient.postTransaction(responseCase.getId(), transaction);
+		
+		assertNotNull(responseTransaction.getId());
+		assertEquals(10.99, responseTransaction.getTotalTransactionValue());
+	}
+	
+	@Test
+	public void testUpdateTransaction() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Transaction transaction = new Transaction();
+		transaction.setTotalTransactionValue(10.99);
+		kase.setTransaction(transaction);
+		Case responseCase = ApiClient.postCase(kase);
+		
+		transaction.setTotalTransactionValue(100.99);
+		Transaction responseTransaction = ApiClient.updateTransaction(responseCase.getId(), transaction);
+		
+		assertNotNull(responseTransaction.getId());
+		assertEquals(100.99, responseTransaction.getTotalTransactionValue());
+	}
+	
+	@Test
+	public void testGetTransaction() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Transaction transaction = new Transaction();
+		transaction.setTotalTransactionValue(10.99);
+		kase.setTransaction(transaction);
+		Case responseCase = ApiClient.postCase(kase);
+		
+		Transaction responseTransaction = ApiClient.getTransaction(responseCase.getId());
+		
+		assertNotNull(responseTransaction.getId());
+		assertEquals(10.99, responseTransaction.getTotalTransactionValue());
+	}
+	
+	@Test
+	public void testPostCaseStatus() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Case responseCase = ApiClient.postCase(kase);
+		
+		CaseStatus caseStatus = new CaseStatus();
+		caseStatus.setComment("Testing Status!!");
+		caseStatus.setStatus(CaseStatusType.Completed);
+		
+		CaseStatus returnStatus = ApiClient.postCaseStatus(responseCase.getId(), caseStatus);
+		
+		assertNotNull(returnStatus.getId());
+		assertEquals(CaseStatusType.Completed, returnStatus.getStatus());
+	}
+	
+	@Test
+	public void testGetCaseStatus() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Case responseCase = ApiClient.postCase(kase);
+		
+		//Case should have a default status of Placed
+		CaseStatus returnStatus = ApiClient.getCaseStatus(responseCase.getId(), responseCase.getStatuses().iterator().next().getId());
+		
+		assertNotNull(returnStatus.getId());
+		assertEquals(CaseStatusType.Placed, returnStatus.getStatus());
+	}
+	
+	@Test
+	public void testGetCaseStatuses() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Case responseCase = ApiClient.postCase(kase);
+		
+		CaseStatus caseStatus = new CaseStatus();
+		caseStatus.setComment("Testing Status!!");
+		caseStatus.setStatus(CaseStatusType.Completed);
+		
+		CaseStatus returnStatus = ApiClient.postCaseStatus(responseCase.getId(), caseStatus);
+		
+		//Case should have a default status of Placed
+		Collection<CaseStatus> returnStatuses = ApiClient.getCaseStatuses(responseCase.getId());
 
+		assertTrue(returnStatuses.size() > 1);
+	}
+	
+	@Test
+	public void testPostCustomerAddress() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Customer customer = new Customer();
+		customer.setFirstName("John");
+		customer.setLastName("Doe");
+		kase.setCustomer(customer);
+		Case responseCase = ApiClient.postCase(kase);
+		
+		Address address = new Address();
+		address.setCity("Cork");
+		
+		Address returnAddress = ApiClient.postCustomerAddress(responseCase.getId(), address);
+		
+		assertNotNull(returnAddress.getId());
+	}
+	
+	@Test
+	public void testUpdateCustomerAddress() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Customer customer = new Customer();
+		customer.setFirstName("John");
+		customer.setLastName("Doe");
+		kase.setCustomer(customer);
+		Address address = new Address();
+		address.setCity("Cork");
+		Collection<Address> addresses = new LinkedList<Address>();
+		addresses.add(address);
+		customer.setAddresses(addresses);
+		
+		Case responseCase = ApiClient.postCase(kase);
+		
+		
+		
+		Address returnAddress = ApiClient.updateCustomerAddress(responseCase.getId(), address, responseCase.getCustomer().getAddresses().iterator().next().getId());
+		
+		assertNotNull(returnAddress.getId());
+	}
+	
+	@Test
+	public void testGetCustomerAddress() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Customer customer = new Customer();
+		customer.setFirstName("John");
+		customer.setLastName("Doe");
+		kase.setCustomer(customer);
+		Address address = new Address();
+		address.setCity("Cork");
+		Collection<Address> addresses = new LinkedList<Address>();
+		addresses.add(address);
+		customer.setAddresses(addresses);
+		
+		Case responseCase = ApiClient.postCase(kase);
+		
+		Address returnAddress = ApiClient.getCustomerAddress(responseCase.getId(), responseCase.getCustomer().getAddresses().iterator().next().getId());
+		
+		assertNotNull(returnAddress.getId());
+	}
+	
+	@Test
+	public void testGetCustomerAddresses() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Customer customer = new Customer();
+		customer.setFirstName("John");
+		customer.setLastName("Doe");
+		kase.setCustomer(customer);
+		Address address = new Address();
+		address.setCity("Cork");
+		Address address1 = new Address();
+		address1.setCity("Cork");
+		Collection<Address> addresses = new LinkedList<Address>();
+		addresses.add(address);
+		addresses.add(address1);
+		customer.setAddresses(addresses);
+		
+		Case responseCase = ApiClient.postCase(kase);
+		
+		Collection<Address> returnAddresses = ApiClient.getCustomerAddresses(responseCase.getId());
+
+		assertTrue(returnAddresses.size() > 1);
+	}
+	
+	@Test
+	public void testPostEmail() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Customer customer = new Customer();
+		customer.setFirstName("John");
+		customer.setLastName("Doe");
+		kase.setCustomer(customer);
+		Case responseCase = ApiClient.postCase(kase);
+		
+		Email email = new Email();
+		email.setEmailAddress("johndow@gmail.com");
+		
+		Email returnEmail = ApiClient.postEmail(responseCase.getId(), email);
+
+		assertNotNull(returnEmail.getId());
+	}
+	
+	@Test
+	public void testUpdateEmail() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Customer customer = new Customer();
+		customer.setFirstName("John");
+		customer.setLastName("Doe");
+		kase.setCustomer(customer);
+		Collection<Email> emails = new LinkedList<Email>();
+		Email email = new Email();
+		email.setEmailAddress("johndow@gmail.com");
+		emails.add(email);
+		customer.setEmail(emails);
+		
+		Case responseCase = ApiClient.postCase(kase);
+		
+		email.setEmailAddress("joedow@gmail.com");
+		
+		Email returnEmail = ApiClient.updateEmail(responseCase.getId(), email, responseCase.getCustomer().getEmail().iterator().next().getId());
+
+		assertNotNull(returnEmail.getId());
+		assertEquals("joedow@gmail.com", returnEmail.getEmailAddress());
+	}
+	
+	@Test
+	public void testGetEmail() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Customer customer = new Customer();
+		customer.setFirstName("John");
+		customer.setLastName("Doe");
+		kase.setCustomer(customer);
+		Collection<Email> emails = new LinkedList<Email>();
+		Email email = new Email();
+		email.setEmailAddress("johndow@gmail.com");
+		emails.add(email);
+		customer.setEmail(emails);
+		
+		Case responseCase = ApiClient.postCase(kase);
+		
+		Email returnEmail = ApiClient.getEmail(responseCase.getId(), responseCase.getCustomer().getEmail().iterator().next().getId());
+
+		assertNotNull(returnEmail.getId());
+		assertEquals("johndow@gmail.com", returnEmail.getEmailAddress());
+	}
+	
+	@Test
+	public void testGetEmails() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Customer customer = new Customer();
+		customer.setFirstName("John");
+		customer.setLastName("Doe");
+		kase.setCustomer(customer);
+		Collection<Email> emails = new LinkedList<Email>();
+		Email email = new Email();
+		email.setEmailAddress("johndow@gmail.com");
+		
+		Email email2 = new Email();
+		email2.setEmailAddress("janedow@gmail.com");
+		emails.add(email);
+		emails.add(email2);
+		customer.setEmail(emails);
+		
+		Case responseCase = ApiClient.postCase(kase);
+		
+		Collection<Email> returnEmails = ApiClient.getEmails(responseCase.getId());
+
+		assertTrue(returnEmails.size() > 1);
+	}
+	
+	@Test
+	public void testPostPayment() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Case responseCase = ApiClient.postCase(kase);
+		
+		Payment payment = new Payment();
+		payment.setBinNumber("123456");
+		Payment returnPayment = ApiClient.postPayment(responseCase.getId(), payment);
+
+		assertNotNull(returnPayment.getId());
+	}
+	
+	@Test
+	public void testUpdatePayment() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Collection<Payment> payments = new LinkedList<Payment>();
+		Payment payment = new Payment();
+		payment.setBinNumber("123456");
+		payments.add(payment);
+		kase.setPayments(payments);
+		Case responseCase = ApiClient.postCase(kase);
+		
+		payment.setBinNumber("654321");
+		Payment returnPayment = ApiClient.updatePayment(responseCase.getId(), payment, responseCase.getPayments().iterator().next().getId());
+
+		assertNotNull(returnPayment.getId());
+	}
+	
+	@Test
+	public void testGetPayment() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Collection<Payment> payments = new LinkedList<Payment>();
+		Payment payment = new Payment();
+		payment.setBinNumber("123456");
+		payments.add(payment);
+		kase.setPayments(payments);
+		Case responseCase = ApiClient.postCase(kase);
+		
+		Payment returnPayment = ApiClient.getPayment(responseCase.getId(), responseCase.getPayments().iterator().next().getId());
+
+		assertNotNull(returnPayment.getId());
+	}
+	
+	@Test
+	public void testGetPayments() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Collection<Payment> payments = new LinkedList<Payment>();
+		Payment payment = new Payment();
+		payment.setBinNumber("123456");
+		Payment payment2 = new Payment();
+		payment2.setBinNumber("654321");
+		payments.add(payment);
+		payments.add(payment2);
+		kase.setPayments(payments);
+		Case responseCase = ApiClient.postCase(kase);
+		
+		Collection<Payment> returnPayments = ApiClient.getPayments(responseCase.getId());
+
+		assertTrue(returnPayments.size() > 1);
+	}
+	
+	@Test
+	public void testPostSocialAccount() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Customer customer = new Customer();
+		customer.setFirstName("Joe");
+		kase.setCustomer(customer);
+		Case responseCase = ApiClient.postCase(kase);
+		
+		SocialAccount socialAccount = new SocialAccount();
+		socialAccount.setSocialId(123454);
+		SocialAccount returnSocialAccount = ApiClient.postSocialAccount(responseCase.getId(), socialAccount);
+
+		assertNotNull(returnSocialAccount.getId());
+	}
+	
+	@Test
+	public void testUpdateSocialAccount() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Collection<SocialAccount> socialAccounts = new LinkedList<SocialAccount>();
+		Customer customer = new Customer();
+		SocialAccount socialAccount = new SocialAccount();
+		socialAccount.setSocialId(123456);
+		socialAccounts.add(socialAccount);
+		customer.setSocialAccounts(socialAccounts);
+		kase.setCustomer(customer);
+		Case responseCase = ApiClient.postCase(kase);
+		
+		socialAccount.setSocialId(65432);
+		SocialAccount returnSocialAccount = ApiClient.updateSocialAccount(responseCase.getId(), socialAccount, responseCase.getCustomer().getSocialAccounts().iterator().next().getId());
+
+		assertNotNull(returnSocialAccount.getId());
+	}
+	
+	@Test
+	public void testGetSocialAccount() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Collection<SocialAccount> socialAccounts = new LinkedList<SocialAccount>();
+		Customer customer = new Customer();
+		SocialAccount socialAccount = new SocialAccount();
+		socialAccount.setSocialId(123456);
+		socialAccounts.add(socialAccount);
+		customer.setSocialAccounts(socialAccounts);
+		kase.setCustomer(customer);
+		Case responseCase = ApiClient.postCase(kase);
+		
+		SocialAccount returnSocialAccount = ApiClient.getSocialAccount(responseCase.getId(), responseCase.getCustomer().getSocialAccounts().iterator().next().getId());
+
+		assertNotNull(returnSocialAccount.getId());
+	}
+	
+	@Test
+	public void testGetSocialAccounts() throws TrustevApiException {
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+		
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Collection<SocialAccount> socialAccounts = new LinkedList<SocialAccount>();
+		Customer customer = new Customer();
+		SocialAccount socialAccount = new SocialAccount();
+		socialAccount.setSocialId(123456);
+		socialAccounts.add(socialAccount);
+		customer.setSocialAccounts(socialAccounts);
+		kase.setCustomer(customer);
+		Case responseCase = ApiClient.postCase(kase);
+		
+		Collection<SocialAccount> returnSocialAccounts = ApiClient.getSocialAccounts(responseCase.getId());
+
+		assertEquals(1, returnSocialAccounts.size());
+	}
+	
+	@Test
+	public void testPostTransactionAddress() throws TrustevApiException {
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+		
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Collection<Address> addresses = new LinkedList<Address>();
+		Transaction transaction = new Transaction();
+		Address address = new Address();
+		address.setCity("Cork");
+		addresses.add(address);
+		transaction.setAddresses(addresses);
+		kase.setTransaction(transaction);
+		Case responseCase = ApiClient.postCase(kase);
+		
+		Address returnAddress = ApiClient.postTransactionAddress(responseCase.getId(), address);
+
+		assertNotNull(returnAddress.getId());
+	}
+	
+	@Test
+	public void testUpdateTransactionAddress() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Collection<Address> addresses = new LinkedList<Address>();
+		Transaction transaction = new Transaction();
+		Address address = new Address();
+		address.setCity("Cork");
+		addresses.add(address);
+		transaction.setAddresses(addresses);
+		kase.setTransaction(transaction);
+		Case responseCase = ApiClient.postCase(kase);
+		
+		address.setCity("Dublin");
+		Address returnAddress = ApiClient.updateTransactionAddress(responseCase.getId(), address, responseCase.getTransaction().getAddresses().iterator().next().getId());
+
+		assertNotNull(returnAddress.getId());
+	}
+	
+	@Test
+	public void testGetTransactionAddress() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Collection<Address> addresses = new LinkedList<Address>();
+		Transaction transaction = new Transaction();
+		Address address = new Address();
+		address.setCity("Cork");
+		addresses.add(address);
+		transaction.setAddresses(addresses);
+		kase.setTransaction(transaction);
+		Case responseCase = ApiClient.postCase(kase);
+		
+		Address returnAddress = ApiClient.getTransactionAddress(responseCase.getId(), responseCase.getTransaction().getAddresses().iterator().next().getId());
+
+		assertNotNull(returnAddress.getId());
+	}
+	
+	@Test
+	public void testGetTransactionAddresseses() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Collection<Address> addresses = new LinkedList<Address>();
+		Transaction transaction = new Transaction();
+		Address address = new Address();
+		address.setCity("Cork");
+		addresses.add(address);
+		transaction.setAddresses(addresses);
+		kase.setTransaction(transaction);
+		Case responseCase = ApiClient.postCase(kase);
+		
+		Collection<Address> returnAddresses = ApiClient.getTransactionAddresses(responseCase.getId());
+
+		assertTrue(returnAddresses.size() == 1);
+	}
+	
+	@Test
+	public void testPostTransactionItem() throws TrustevApiException {
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+		
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Collection<TransactionItem> transactionItems = new LinkedList<TransactionItem>();
+		Transaction transaction = new Transaction();
+		TransactionItem transactionItem = new TransactionItem();
+		transactionItem.setItemValue(10.99);
+		transactionItems.add(transactionItem);
+		transaction.setItems(transactionItems);
+		kase.setTransaction(transaction);
+		Case responseCase = ApiClient.postCase(kase);
+		
+		TransactionItem returnTransactionItem = ApiClient.postTransactionItem(responseCase.getId(), transactionItem);
+
+		assertNotNull(returnTransactionItem.getId());
+	}
+	
+	@Test
+	public void testUpdateTransactionItem() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Collection<TransactionItem> transactionItems = new LinkedList<TransactionItem>();
+		Transaction transaction = new Transaction();
+		TransactionItem transactionItem = new TransactionItem();
+		transactionItem.setItemValue(10.99);
+		transactionItems.add(transactionItem);
+		transaction.setItems(transactionItems);
+		kase.setTransaction(transaction);
+		Case responseCase = ApiClient.postCase(kase);
+		
+		transactionItem.setItemValue(100.99);
+		TransactionItem returnTransactionItem = ApiClient.updateTransactionItem(responseCase.getId(), transactionItem, responseCase.getTransaction().getItems().iterator().next().getId());
+
+		assertNotNull(returnTransactionItem.getId());
+	}
+	
+	@Test
+	public void testGetTransactionItem() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Collection<TransactionItem> transactionItems = new LinkedList<TransactionItem>();
+		Transaction transaction = new Transaction();
+		TransactionItem transactionItem = new TransactionItem();
+		transactionItem.setItemValue(10.99);
+		transactionItems.add(transactionItem);
+		transaction.setItems(transactionItems);
+		kase.setTransaction(transaction);
+		Case responseCase = ApiClient.postCase(kase);
+		
+		TransactionItem returnTransactionItem = ApiClient.getTransactionItem(responseCase.getId(), responseCase.getTransaction().getItems().iterator().next().getId());
+
+		assertNotNull(returnTransactionItem.getId());
+	}
+	
+	@Test
+	public void testGetTransactionItems() throws TrustevApiException {
+		//Initialize Client
+		ApiClient.SetUp("test-http://app.testintegration.com", "4c80addf828f49d48704082bf4f0279f", "1f9e91af029a48fabcfd9e2828f31b80");
+				
+		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+		Collection<TransactionItem> transactionItems = new LinkedList<TransactionItem>();
+		Transaction transaction = new Transaction();
+		TransactionItem transactionItem = new TransactionItem();
+		transactionItem.setItemValue(10.99);
+		transactionItems.add(transactionItem);
+		transaction.setItems(transactionItems);
+		kase.setTransaction(transaction);
+		Case responseCase = ApiClient.postCase(kase);
+		
+		Collection<TransactionItem> returnTransactionItems = ApiClient.getTransactionItems(responseCase.getId());
+
+		assertTrue(returnTransactionItems.size() == 1);
+	}
 }

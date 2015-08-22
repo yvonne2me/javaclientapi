@@ -1,14 +1,10 @@
-package com.trustev.integration;
+package com.trustev.domain.entities;
 
-import java.util.Collection;
 import java.util.Date;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.GenericType;
 
 /**
  * Represents an Address for either a Customer or Transaction
@@ -17,7 +13,7 @@ import com.sun.jersey.api.client.GenericType;
  *
  */
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
-public class Address extends ChildObject<Address> {
+public class Address extends BaseObject {
 	
 		
 	/**
@@ -253,51 +249,5 @@ public class Address extends ChildObject<Address> {
 	private Date timestamp;
 	
 	private boolean isDefault;
-	
-	
-	/**
-	 * Adds the Address to the Customer on a previously saved Case. 
-	 * 
-	 * @param caseId The case id of the case to save against
-	 * @throws TrustevApiException
-	 */
-	@Override
-	public void SaveForCase(String caseId) throws TrustevApiException {
-		if (this.getId() == null) {
-			String path = "case/{caseId}/customer/address".replace("{caseId}",caseId);
-			this.id = callApiMethodFor(path, "POST").id;	
-		}
-		else {
-			String path = "case/{caseId}/customer/address/{id}".replace("{caseId}",caseId).replace("{id}", this.id);
-			this.id = callApiMethodFor(path, "PUT").id;
-		}
-	}
-	
-	/**
-	 * Finds a single Address that is attached to a previously saved Case
-	 * 
-	 * @param caseId caseId The case id of the case that the Address is attached to
-	 * @param id The id of the Address to be retrieved
-	 * @return An Address object representing the Address
-	 * @throws TrustevApiException
-	 */
-	public static Address Find(String caseId, String id) throws TrustevApiException {
-		String path = "case/{caseId}/customer/address/{id}".replace("{caseId}",caseId).replace("{id}",id);
-		return (Address) callApiMethodFor(path, null, Address.class, "GET");	
-	}
-	
-	/**
-	 * Finds all of the addresses associated with a previously saved case
-	 * 
-	 * @param caseId The case id of the case that the Address is attached to
-	 * @return A collection of all the Addresses on the Case
-	 * @throws TrustevApiException
-	 */
-	public static Collection<Address> FindAll(String caseId) throws TrustevApiException {
-		String path = "case/{caseId}/customer/address".replace("{caseId}",caseId);
-		GenericType<Collection<Address>> type = new GenericType<Collection<Address>>(){};
-		ClientResponse response = callApiMethod(path, null, "GET");
-		return response.getEntity(type);
-	}
 	
 }

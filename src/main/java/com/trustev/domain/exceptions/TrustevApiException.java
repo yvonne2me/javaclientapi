@@ -1,16 +1,16 @@
-package com.trustev.integration;
+package com.trustev.domain.exceptions;
 
 public class TrustevApiException extends Exception {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5303648162049104799L;
-
-	public TrustevApiException(String message, Throwable cause) {
-		super(message, cause);
-	}
+	private static final long serialVersionUID = 2200672193613015236L;
 	
-	public TrustevApiException(String message) {
+	public int responseCode;
+
+	public TrustevApiException(int httpCode, String message) {
 		super(message);
+		this.responseCode = httpCode;
 	}
 }

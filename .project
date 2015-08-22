@@ -20,11 +20,4 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.m2e.core.maven2Nature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>src/test/resources/GenerateSessionId.html</name>
-			<type>1</type>
-			<location>C:/Users/jack.mcauliffe/workspace/trustev-integration/src/test/resources/GenerateSessionId.html</location>
-		</link>
-	</linkedResources>
 </projectDescription>

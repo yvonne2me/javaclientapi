@@ -1,4 +1,4 @@
-package com.trustev.integration;
+package com.trustev.domain.entities;
 
 import java.util.Collection;
 import java.util.Date;
@@ -15,7 +15,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  *
  */
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
-public class Customer extends ChildObject<Customer>{
+public class Customer extends BaseObject{
 	
 		
 	/**
@@ -159,37 +159,6 @@ public class Customer extends ChildObject<Customer>{
 	@JsonProperty("AccountNumber")
 	public void setAccountNumber(String accountNumber) {
 		this.accountNumber = accountNumber;
-	}
-	
-	
-	/**
-	 * Adds the customer to a previously saved Case. 
-	 * 
-	 * @param caseId The case id of the case to save the customer against
-	 * @throws TrustevApiException
-	 */
-	@Override
-	public void SaveForCase(String caseId) throws TrustevApiException {
-		if (this.getId() == null) {
-			String path = "case/{caseId}/customer".replace("{caseId}",caseId);
-			this.id = callApiMethodFor(path, "POST").id;
-		}
-		else {
-			String path = "case/{caseId}/customer".replace("{caseId}",caseId);
-			callApiMethodFor(path, "PUT");	
-		}
-	}
-
-	/**
-	 * Finds a Customer that is attached to a previously saved Case
-	 * 
-	 * @param caseId The case id of the case that the customer is attached to
-	 * @return The customer object associated with the provided case
-	 * @throws TrustevApiException
-	 */
-	public static Customer Find(String caseId) throws TrustevApiException {
-		String path = "case/{caseId}/customer".replace("{caseId}",caseId);
-		return (Customer) callApiMethodFor(path, null, Customer.class, "GET");	
 	}
 	
 	private String firstName;
