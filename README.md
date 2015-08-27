@@ -1,12 +1,11 @@
-<img src="Assets/Images/TrustevLogo.png"></img>
-#Trustev-Java
-Java wrapper for Trustev API
-
-##Getting Started
+![alt text](https://app.trustev.com/assets/img/apple-icon-144.png)
+#Trustev Java Libary
 - If you are not familiar with Trustev, start with our [Developer Portal](http://www.trustev.com/developers).
 - Check out our [API Documentation](http://www.trustev.com/developers#apioverview).
+- If you would like to get some test keys to begin integrating please contact integrate@trustev.com
 
 ##Installation
+####Maven Users
 - For Maven, it is available in the Central Repository therefore just add the following dependency to your pom.xml file
 ```xml
   <dependency>
@@ -16,8 +15,14 @@ Java wrapper for Trustev API
   </dependency>
 ```
 
+####Others
+- You could also download our solution, build it and simply include the jar files as you need them.
+- Our library can also be used as an example to inspire your own integration to the Trustev Platform.
 
-##SSL Certification Import
+## Usage
+   The Trustev API has been designed to allow users complete control over what information they are sending to us while still ensuring that integration can be done a couple of simple steps
+
+###SSL Certification Import
 The Trustev API https://app.trustev.com uses a wildcard certificate.  Languages such as Java and PHP are more strict with SSL certifications and do not by default validate wildcard certificates.
 To get around this you will need to manually import the certficate as a trusted certificate into the JVM.  To do this download the certificate from Firefox or another browser.
 
@@ -33,49 +38,3 @@ To get around this you will need to manually import the certficate as a trusted 
 - Run the following command "keytool -import -alias trustev -file Trustev.cer -keystore Trustev.jks"
 - Follow the prompts, you will be prompted to enter a password.  For the purposes of this example assume the password is changeme
 - Update the startup JVM args of you java environment to use the keystore created.  The following JVM arguments should be passed -Djavax.net.ssl.trustStore=C:\Trustev.jks -Djavax.net.ssl.trustStorePassword=changeme
-
-
-##Usage
-
-#### Supply API Keys
-The first step is to get an API Tokens, refer to http://developers.trustev.com/ for information on how to do that.
-Once you have API Keys you will need to create a java properties file on your class path called trustev.properties the file
-should contain the following keys
-```java
-
-		username=test-http://app.testintegration.com
-		password=4c80addf828f49d48704082bf4f0279f
-		sharedsecret=1f9e91af029a48fabcfd9e2828f31b80
-```
-
-Where username, password and sharedsecret are the values in the dashboard.  Each request will also require a SessionId which is obtained by including the trustev.js file on your webpage and
-passed to the backend Servlet or Controller.
-
-#### Creating a Case and Making a Decision
-Once you have supplied the trustev.properties file you can make a decision by instantiating a Case object, setting the relevant values and calling MakeDecision
-
-```java
-		String caseNumber = "MyCase12345";		// merchant specific Case number, 
-		UUID sessionId = UUID.fromString("f9b21183-a88e-4454-992a-febe98658384");  // SessionId created by trustev.js inclusion
-		
-		// instantiate a Case object
-		Case myCase = new Case(sessionId, caseNumber);
-		
-		// set initial values
-		myCase.setCaseNumber(caseNumber);
-		myCase.setTimestamp(new Date());
-		Customer customer = new Customer();
-		customer.setFirstName("Gene");
-		customer.setLastName("Geniune");
-		myCase.setCustomer(customer);
-		// set other values as needed, the Case object reflects exactly the objects in http://app.trustev.com/Help
-		
-		// get the decision on the case
-		Decision decision = myCase.MakeDecision();
-		if (decision.getResult() == DecisionResult.Pass) {
-			// decision result was a pass, process the order
-		}
-		else {
-			// decision result was not a pass, order is fraud!
-		}
-```
