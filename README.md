@@ -11,7 +11,7 @@
   <dependency>
 	<groupId>com.trustev</groupId>
   	<artifactId>trustev-java</artifactId>
-  	<version>2.0.1</version>
+  	<version>2.0.2</version>
   </dependency>
 ```
 
@@ -38,3 +38,126 @@ To get around this you will need to manually import the certficate as a trusted 
 - Run the following command "keytool -import -alias trustev -file Trustev.cer -keystore Trustev.jks"
 - Follow the prompts, you will be prompted to enter a password.  For the purposes of this example assume the password is changeme
 - Update the startup JVM args of you java environment to use the keystore created.  The following JVM arguments should be passed -Djavax.net.ssl.trustStore=C:\Trustev.jks -Djavax.net.ssl.trustStorePassword=changeme
+
+### Simple Trustev Integration
+This is simple version of the trustev integration and involes 4 simple steps
+```java
+
+// 1. Set-Up the Trustev Api Client with your user credentials
+ApiClient.SetUp(userName, password, secret);
+
+
+// 2. Create your case.
+// You will need two bits of information for this setp
+// 		SessionId : This is the SessionId that you have recieved from the trustev JavaScript 
+//					and transfered server-side
+// 		CaseNumber : This is a number that you use to uniquely identify this case. It must
+//					 be unique.
+Case kase = new Case(sessionId, caseNumber);
+
+// Now add any further information you have. The more you give us, the more accurate 
+// our decisions.
+Customer customer = new Customer();
+customer.setFirstName("John");
+customer.setLastName("Doe");
+kase.setCustomer(customer);
+
+
+// 3. Post this Case to the Trustev Api
+Case returnCase = ApiClient.postCase(kase);
+
+
+// 4. You can now get your Decision from Trustev base on the case you have given us!
+Decision decision = ApiClient.getDecision(returnCase.getId());
+
+
+// Now its up to you what you do with our decision
+
+```
+
+#### Optional Integration Steps
+As mentioned earlier, we also provided detailed Api endpoints for updating specific parts of your Case. These steps can be used where use cases require. See below for some examples.
+
+##### Example : Adding a Customer
+
+```java
+
+// 1. Set-Up the Trustev Api Client with your user credentials
+ApiClient.SetUp(userName, password, secret);
+
+
+// 2. Create your case.
+// You will need two bits of information for this setp
+// 		SessionId : This is the SessionId that you have recieved from the trustev JavaScript 
+//					and transfered server-side
+// 		CaseNumber : This is a number that you use to uniquely identify this case. It must
+//					 be unique.
+Case kase = new Case(sessionId, caseNumber);
+
+// 3. Post this Case to the Trustev Api
+Case returnCase = ApiClient.postCase(kase);
+
+
+// 4. You may now want to add a Customer to Case you have already added.
+//    First lets create the customer.
+Customer customer = new Customer();
+customer.setFirstName("John");
+customer.setLastName("Doe");
+
+//    Now we can go ahead and at the customer to the case we added earlier.
+Customer returnCustomer = ApiClient.postCustomer(returnCase.getId(), customer);
+
+
+// 5. You can now continue as normal and get the Decision this case including
+//    the new customer you have added
+Decision decision = ApiClient.getDecision(returnCase.getId());
+
+
+// Now its up to you what you do with our decision
+
+```
+
+##### Example : Updating a Transaction
+
+```java
+
+// 1. Set-Up the Trustev Api Client with your user credentials
+ApiClient.SetUp(userName, password, secret);
+
+
+// 2. Create your case.
+// You will need two bits of information for this setp
+// 		SessionId : This is the SessionId that you have recieved from the trustev JavaScript 
+//					and transfered server-side
+// 		CaseNumber : This is a number that you use to uniquely identify this case. It must
+//					 be unique.
+Case kase = new Case(sessionId, caseNumber);
+Transaction transaction = new Transaction();
+transaction.setTotalTransactionValue(10.99);
+kase.setTransaction(transaction);
+
+// 3. Post this Case to the Trustev Api
+Case returnCase = ApiClient.postCase(kase);
+
+
+// 4. Now, say the value of this transaction changes,
+//	  We provide the functionality to update the transaction you have already added
+//	  Just rebuild the transaction again with the new information
+Transaction transaction = new Transaction();
+transaction.setTotalTransactionValue(100.99);
+
+//    Now we can go ahead and at the customer to the case we added earlier.
+Transaction returnTransaction = ApiClient.updateTransaction(returnCase.getId(), transaction);
+
+
+// 5. You can now continue as normal and get the Decision this case including
+//    the updated transaction you have added
+Decision decision = ApiClient.getDecision(returnCase.getId());
+
+
+// Now its up to you what you do with our decision
+
+```
+
+We provide similar functions i.e. Post, Update and Get for every Sub Entity of the Case Object.
+For more examples of these, check out the unit tests.
