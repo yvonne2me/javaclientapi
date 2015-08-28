@@ -7,10 +7,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
- * Social media account for a customer
- * 
- * @author jack.mcauliffe
- *
+ * The Customer's Social Account details such as Social Ids, Access Tokens and Secret
  */
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class SocialAccount extends BaseObject {

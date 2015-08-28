@@ -9,17 +9,13 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 
 /**
- * Represents a Customer.  Each case can have one associated customer
- * 
- * @author jack.mcauliffe
- *
+ * The Customer object includes the information on a Customer such as Address, Names, Email, Phone Number and Social Account information.
  */
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class Customer extends BaseObject{
 	
 		
 	/**
-	 * 
 	 * @return The First Name of the Customer.
 	 */
 	public String getFirstName() {
@@ -27,7 +23,6 @@ public class Customer extends BaseObject{
 	}
 	
 	/**
-	 * 
 	 * @param firstName The First Name of the Customer.
 	 */
 	@JsonProperty("FirstName")
@@ -36,7 +31,6 @@ public class Customer extends BaseObject{
 	}
 	
 	/**
-	 * 
 	 * @return The Last Name of the Customer.
 	 */
 	public String getLastName() {
@@ -44,7 +38,6 @@ public class Customer extends BaseObject{
 	}
 	
 	/**
-	 * 
 	 * @param lastName The Last Name of the Customer.
 	 */
 	@JsonProperty("LastName")
@@ -53,7 +46,6 @@ public class Customer extends BaseObject{
 	}
 	
 	/**
-	 * 
 	 * @return A collection of Emails. Please see Emails object for further parameter information.
 	 */
 	public Collection<Email> getEmail() {
@@ -61,7 +53,6 @@ public class Customer extends BaseObject{
 	}
 	
 	/**
-	 * 
 	 * @param email A collection of Emails. Please see Emails object for further parameter information.
 	 */
 	@JsonProperty("Emails")
@@ -70,7 +61,6 @@ public class Customer extends BaseObject{
 	}
 	
 	/**
-	 * 
 	 * @return The Phone Number for the Customer.
 	 */
 	public String getPhoneNumber() {
@@ -78,7 +68,6 @@ public class Customer extends BaseObject{
 	}
 	
 	/**
-	 * 
 	 * @param phoneNumber The Phone Number for the Customer.
 	 */
 	@JsonProperty("PhoneNumber")
@@ -87,7 +76,6 @@ public class Customer extends BaseObject{
 	}
 	
 	/**
-	 * 
 	 * @return The Date of Birth of the Customer.
 	 */
 	@JsonIgnore()
@@ -102,7 +90,6 @@ public class Customer extends BaseObject{
 	}
 	
 	/**
-	 * 
 	 * @param dateOfBirth The Date of Birth of the Customer.
 	 */
 	@JsonProperty("DateOfBirth")
@@ -111,7 +98,6 @@ public class Customer extends BaseObject{
 	}
 	
 	/**
-	 * 
 	 * @return Addresses Object  Contains standard/delivery/billing information. Please see Address Object for further parameter information.
 	 */
 	public Collection<Address> getAddresses() {

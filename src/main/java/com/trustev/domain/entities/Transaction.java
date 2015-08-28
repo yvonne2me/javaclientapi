@@ -9,16 +9,12 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
- * Represents a Transaction on a Trustev Case
- * 
- * @author jack.mcauliffe
- *
+ * Transaction Object - includes details such as Transaction Amount, Currency, Items and Transaction delivery/billing address.
  */
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class Transaction extends BaseObject {
 	
 	/**
-	 * 
 	 * @return Total Value of the Transaction.
 	 */
 	public double getTotalTransactionValue() {
@@ -26,7 +22,6 @@ public class Transaction extends BaseObject {
 	}
 	
 	/**
-	 * 
 	 * @param totalTransactionValue Total Value of the Transaction.
 	 */
 	@JsonProperty("TotalTransactionValue")
@@ -35,7 +30,6 @@ public class Transaction extends BaseObject {
 	}
 	
 	/**
-	 * 
 	 * @return Currency Type Code. Standard Currency Type codes can be found at http://www.xe.com/currency
 	 */
 	public String getCurrency() {
@@ -43,7 +37,6 @@ public class Transaction extends BaseObject {
 	}
 	
 	/**
-	 * 
 	 * @param currency Currency Type Code. Standard Currency Type codes can be found at http://www.xe.com/currency
 	 */
 	@JsonProperty("Currency")
@@ -52,7 +45,6 @@ public class Transaction extends BaseObject {
 	}
 	
 	/**
-	 * 
 	 * @return Current Timestamp.
 	 */
 	@JsonIgnore()
@@ -66,7 +58,6 @@ public class Transaction extends BaseObject {
 	}
 	
 	/**
-	 * 
 	 * @param timestamp Current Timestamp.
 	 */
 	@JsonProperty("Timestamp")
@@ -75,7 +66,6 @@ public class Transaction extends BaseObject {
 	}
 	
 	/**
-	 * 
 	 * @return Addresses Object  Contains standard/delivery/billing information. Please see Address Object for further parameter information.
 	 */
 	public Collection<Address> getAddresses() {
@@ -83,9 +73,7 @@ public class Transaction extends BaseObject {
 	}
 	
 	/**
-	 * Addresses Object  Contains standard/delivery/billing information. Please see Address Object for further parameter information.
-	 * 
-	 * @param addresses
+	 * @param addresses Addresses Object  Contains standard/delivery/billing information. Please see Address Object for further parameter information.
 	 */
 	@JsonProperty("Addresses")
 	public void setAddresses(Collection<Address> addresses) {
@@ -93,7 +81,6 @@ public class Transaction extends BaseObject {
 	}
 	
 	/**
-	 * 
 	 * @return Items Object  contains details on Item Name, Quantity and Item Value. Please see Items Object for further parameter information.
 	 */
 	public Collection<TransactionItem> getItems() {
@@ -101,7 +88,6 @@ public class Transaction extends BaseObject {
 	}
 	
 	/**
-	 * 
 	 * @param items Items Object  contains details on Item Name, Quantity and Item Value. Please see Items Object for further parameter information.
 	 */
 	@JsonProperty("Items")

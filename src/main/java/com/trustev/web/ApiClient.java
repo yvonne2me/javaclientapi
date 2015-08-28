@@ -24,6 +24,9 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.trustev.domain.entities.*;
 import com.trustev.domain.exceptions.TrustevApiException;
 
+	/*
+	* The ApiClient has all the methods required to communicate with the Trustev Platform.
+	*/
 public class ApiClient {
 
 	private static String userName;
@@ -41,8 +44,8 @@ public class ApiClient {
 	}
 	
 	/**
-	 * This method is used to provide your Trustev UserName, Password and Secret to the ApiClient.
-	 * If you do not have these then please contact integrate@trustev.com
+	 * Initialize the Trustev class by passing in your UserName, Secret and Password.
+	 * If you do not have this information, please contact our Integration Team - integrate@trustev.com
 	 * @param userName Your Trustev Username
 	 * @param password Your Trustev Password
 	 * @param secret Your Trustev Secret
@@ -57,8 +60,8 @@ public class ApiClient {
 	
 	/**
 	 * Post your Case to the TrustevClient Api
-	 * @param Your Case which you want to post
-	 * @return The Case along with the Id that TrustevClient have assigned it
+	 * @param kase Your Case which you want to POST
+	 * @return The Case, along with the Case Id that the TrustevClient API have assigned it.
 	 * @throws TrustevApiException
 	 */
 	public static Case postCase(Case kase) throws TrustevApiException{
@@ -66,24 +69,12 @@ public class ApiClient {
 		Case response = (Case)PerformHttpCall(url, HttpMethod.POST, Case.class, kase, true);
 		return response;
 	}
-	
+
 	/**
-	 * Get the Case with the Id caseId
-	 * @param caseId The case Id of the Case you want to get. TrustevClient will have assigned this Id and returned it in the response Case from the Case post Method
-	 * @return
-	 * @throws TrustevApiException
-	 */
-	public static Case getCase(String caseId) throws TrustevApiException{
-		String url = "/Case/" + caseId;
-		Case response = (Case)PerformHttpCall(url, HttpMethod.GET, Case.class, null, true);
-		return response;
-	}
-	
-	/**
-	 * Update your Case with caseId provided with the new Case object
-	 * @param kase Your Case which you want to Put and update the existing case with
-	 * @param caseId
-	 * @return The Case Id of the case you want to update. TrustevClient will have assigned this Id and returned it in the response Case from the Case post Method
+	 * Update your Case with the case Id, provided with the new Case object
+	 * @param kase Your Case which you want to PUT and update the existing Case with.
+	 * @param caseId The Case Id of the Case you want to update. The TrustevClient API will have assigned this Id and returned it in the response Case from the PostCase Method
+	 * @return 
 	 * @throws TrustevApiException
 	 */
 	public static Case updateCase(Case kase, String caseId) throws TrustevApiException{
@@ -93,8 +84,21 @@ public class ApiClient {
 	}
 	
 	/**
+	 * Get the Case with the Id caseId
+	 * @param caseId The Case Id of the Case you want to get. The TrustevClient API will have assigned this Id and returned it in the response Case from the PostCase Method
+	 * @return
+	 * @throws TrustevApiException
+	 */
+	public static Case getCase(String caseId) throws TrustevApiException{
+		String url = "/Case/" + caseId;
+		Case response = (Case)PerformHttpCall(url, HttpMethod.GET, Case.class, null, true);
+		return response;
+	}
+	
+	
+	/**
 	 * Get a Decision on a Case with Id caseId.
-	 * @param caseId The Id of a Case which you have already posted to the TrustevClient API
+	 * @param caseId The Id of a Case which you have already posted to the TrustevClient API. 
 	 * @return
 	 * @throws TrustevApiException 
 	 */
@@ -120,7 +124,7 @@ public class ApiClient {
 	}
 	
 	/**
-	 * Update the Customer on a Case which already contains a customer
+	 * Update the Customer on a Case which already contains a Customer
 	 * @param caseId The Case Id of a Case which you have already posted
 	 * @param customer Your Customer which you want to Put and update the existing Customer with
 	 * @return
@@ -161,7 +165,7 @@ public class ApiClient {
 	}
 	
 	/**
-	 * Update the Transaction on a Case which already contains a transaction
+	 * Update the Transaction on a Case which already contains a Transaction
 	 * @param caseId The Case Id of a Case which you have already posted
 	 * @param transaction Your Transaction which you want to Put and update the existing Transaction with
 	 * @return
@@ -176,7 +180,7 @@ public class ApiClient {
 	
 	/**
 	 * Get the Transaction attached to the Case
-	 * @param caseId The case Id of the the Case with the Transaction you want to get
+	 * @param caseId The Case Id of the the Case with the Transaction you want to get
 	 * @return
 	 * @throws TrustevApiException
 	 */
@@ -216,7 +220,7 @@ public class ApiClient {
 	}
 	
 	/**
-	 * Get a all the statuses from a Case
+	 * Get all the Statuses from a Case
 	 * @param caseId The Case Id of a Case which you have already posted
 	 * @return
 	 * @throws TrustevApiException
@@ -244,7 +248,7 @@ public class ApiClient {
 	}
 	
 	/**
-	 * Update a specific CustomerAddress on a Case which already contains a CustomerAddresses
+	 * Update a specific CustomerAddress on a Case which already contains a CustomerAddress
 	 * @param caseId The Case Id of a Case which you have already posted
 	 * @param customerAddress The CustomerAddress you want to update the existing CustomerAddress to
 	 * @param customerAddressId The id of the CustomerAddress you want to update
@@ -259,7 +263,7 @@ public class ApiClient {
 	}
 	
 	/**
-	 * Get a specific customerAddress from a Case
+	 * Get a specific CustomerAddress from a Case
 	 * @param caseId The Case Id of a Case with the Customer which you have already posted
 	 * @param customerAddressId The Id of the CustomerAddress you want to get
 	 * @return
@@ -273,8 +277,8 @@ public class ApiClient {
 	}
 	
 	/**
-	 * Get a all the addresses from a Customer on a Case
-	 * @param caseId The Case Id of a Case with the Customer  which you have already posted
+	 * Get all the Addresses from a Customer on a Case
+	 * @param caseId The Case Id of a Case with the Customer which you have already posted
 	 * @return
 	 * @throws TrustevApiException
 	 */
@@ -330,7 +334,7 @@ public class ApiClient {
 	}
 	
 	/**
-	 * Get a all the statuses from a Case
+	 * Get all the Emails from a Case
 	 * @param caseId The Case Id of a Case with the Customer  which you have already posted
 	 * @return
 	 * @throws TrustevApiException
@@ -358,7 +362,7 @@ public class ApiClient {
 	}
 	
 	/**
-	 * Update a specific Payment on a Case which already contains a Payments
+	 * Update a specific Payment on a Case which already contains a Payment
 	 * @param caseId The Case Id of a Case which you have already posted
 	 * @param payment The Payment you want to update the existing Payment to
 	 * @param paymentId The id of the Payment you want to update
@@ -387,7 +391,7 @@ public class ApiClient {
 	}
 	
 	/**
-	 * Get a all the Payments from a Case
+	 * Get all the Payments from a Case
 	 * @param caseId The Case Id of a Case which you have already posted
 	 * @return
 	 * @throws TrustevApiException
@@ -444,7 +448,7 @@ public class ApiClient {
 	}
 	
 	/**
-	 * Get a all the socialAccounts from a Customer on a Cas
+	 * Get all the SocialAccounts from a Customer on a Case
 	 * @param caseId The Case Id of a Case with the Customer  which you have already posted
 	 * @return
 	 * @throws TrustevApiException
@@ -501,7 +505,7 @@ public class ApiClient {
 	}
 	
 	/**
-	 * Get a all the addresses from a Transaction on a Case
+	 * Get all the Addresses from a Transaction on a Case
 	 * @param caseId The Case Id of a Case with the Transaction which you have already posted
 	 * @return
 	 * @throws TrustevApiException
@@ -558,7 +562,7 @@ public class ApiClient {
 	}
 	
 	/**
-	 * Get a all the TransactionItems from a Transaction on a Case
+	 * Get all the TransactionItems from a Transaction on a Case
 	 * @param caseId The Case Id of a Case with the Transaction which you have already posted
 	 * @return
 	 * @throws TrustevApiException
@@ -571,6 +575,14 @@ public class ApiClient {
 		return response;
 	}
 	
+	/**
+	 * This method performs the Http Request to the TrustevClient API
+	 * @param urlPath The HttpMethod Uri
+	 * @param method The Http Method
+	 * @param responseType The type of the response object
+	 * @param entity The relevant entity
+	 * @param isAuthenticationNeeded Does this API call require the X-Authorization header
+	 */
 	private static Object PerformHttpCall(String uriPath, String httpMethod, Class responseType, Object entity, Boolean isAuthenticationNeeded)
 			throws TrustevApiException
 	{

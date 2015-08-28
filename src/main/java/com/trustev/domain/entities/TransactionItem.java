@@ -4,10 +4,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
- * A TransactionItem on a previously saved Transaction
- * 
- * @author jack.mcauliffe
- *
+ * Items Object – contains details on Item Name, Quantity and Item Value. Please see Items Object for further parameter information.
  */
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class TransactionItem extends BaseObject {
@@ -17,7 +14,6 @@ public class TransactionItem extends BaseObject {
 	
 		
 	/**
-	 * 
 	 * @return  The Name of the Item being purchased.
 	 */
 	public String getName() {
@@ -25,7 +21,6 @@ public class TransactionItem extends BaseObject {
 	}
 	
 	/**
-	 * 
 	 * @param name  The Name of the Item being purchased.
 	 */
 	@JsonProperty("Name")
@@ -34,7 +29,6 @@ public class TransactionItem extends BaseObject {
 	}
 	
 	/**
-	 * 
 	 * @return  The Quantity of the Item being purchased.
 	 */
 	public int getQuantity() {
@@ -43,7 +37,6 @@ public class TransactionItem extends BaseObject {
 	
 	
 	/**
-	 * 
 	 * @param quantity  The Quantity of the Item being purchased.
 	 */
 	@JsonProperty("Quantity")
@@ -52,7 +45,6 @@ public class TransactionItem extends BaseObject {
 	}
 	
 	/**
-	 * 
 	 * @return  The Value of the Item being purchased.
 	 */
 	public double getItemValue() {
@@ -60,7 +52,6 @@ public class TransactionItem extends BaseObject {
 	}
 	
 	/**
-	 * 
 	 * @param itemValue  The Value of the Item being purchased.
 	 */
 	@JsonProperty("ItemValue")

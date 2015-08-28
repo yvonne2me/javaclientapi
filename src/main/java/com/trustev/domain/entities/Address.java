@@ -8,25 +8,20 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * Represents an Address for either a Customer or Transaction
- * 
- * @author jack.mcauliffe
- *
  */
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class Address extends BaseObject {
 	
 		
 	/**
-	 * 
-	 * @return The First Name for the  Address.
+	 * @return The First Name for the Standard/Billing/Delivery Address.
 	 */
 	public String getFirstName() {
 		return firstName;
 	}
 	
 	/**
-	 * 
-	 * @param firstName The First Name for the  Address.
+	 * @param firstName The First Name for the Standard/Billing/Delivery Address.
 	 */
 	@JsonProperty("FirstName")
 	public void setFirstName(String firstName) {
@@ -34,8 +29,7 @@ public class Address extends BaseObject {
 	}
 	
 	/**
-	 * 
-	 * @return The Last Name for the  Address.
+	 * @return The Last Name for the Standard/Billing/Delivery Address.
 	 */
 	public String getLastName() {
 		return lastName;
@@ -43,7 +37,7 @@ public class Address extends BaseObject {
 	
 	/**
 	 * 
-	 * @param lastName The Last Name for the  Address.
+	 * @param lastName The Last Name for the Standard/Billing/Delivery Address.
 	 */
 	@JsonProperty("LastName")
 	public void setLastName(String lastName) {
@@ -51,16 +45,14 @@ public class Address extends BaseObject {
 	}
 	
 	/**
-	 * 
-	 * @return Address Line 1 for the  Address.
+	 * @return Address Line 1 for the Standard/Billing/Delivery Address.
 	 */
 	public String getAddress1() {
 		return address1;
 	}
 	
 	/**
-	 * 
-	 * @param address1 Address Line 1 for the  Address.
+	 * @param address1 Address Line 1 for the Standard/Billing/Delivery Address.
 	 */
 	@JsonProperty("Address1")
 	public void setAddress1(String address1) {
@@ -68,16 +60,14 @@ public class Address extends BaseObject {
 	}
 	
 	/**
-	 * 
-	 * @return Address Line 2 for the  Address.
+	 * @return Address Line 2 for the Standard/Billing/Delivery Address.
 	 */
 	public String getAddress2() {
 		return address2;
 	}
 	
 	/**
-	 * 
-	 * @param address2 Address Line 2 for the  Address.
+	 * @param address2 Address Line 2 for the Standard/Billing/Delivery Address.
 	 */
 	@JsonProperty("Address2")
 	public void setAddress2(String address2) {
@@ -85,16 +75,14 @@ public class Address extends BaseObject {
 	}
 	
 	/**
-	 * 
-	 * @return Address Line 3 for the  Address.
+	 * @return Address Line 3 for the Standard/Billing/Delivery Address.
 	 */
 	public String getAddress3() {
 		return address3;
 	}
 	
 	/**
-	 * 
-	 * @param address3  Address Line 3 for the  Address.
+	 * @param address3 Address Line 3 for the Standard/Billing/Delivery Address.
 	 */
 	@JsonProperty("Address3")
 	public void setAddress3(String address3) {
@@ -102,16 +90,14 @@ public class Address extends BaseObject {
 	}
 	
 	/**
-	 * 
-	 * @return City for the  Address.
+	 * @return City for the Standard/Billing/Delivery Address.
 	 */
 	public String getCity() {
 		return city;
 	}
 	
 	/**
-	 * 
-	 * @param city City for the  Address.
+	 * @param city City for the Standard/Billing/Delivery Address.
 	 */
 	@JsonProperty("City")
 	public void setCity(String city) {
@@ -119,16 +105,14 @@ public class Address extends BaseObject {
 	}
 	
 	/**
-	 * 
-	 * @return State for the  Address.
+	 * @return State for the Standard/Billing/Delivery Address.
 	 */
 	public String getState() {
 		return state;
 	}
 	
 	/**
-	 * 
-	 * @param state State for the  Address.
+	 * @param state State for the Standard/Billing/Delivery Address.
 	 */
 	@JsonProperty("State")
 	public void setState(String state) {
@@ -136,16 +120,14 @@ public class Address extends BaseObject {
 	}
 	
 	/**
-	 * 
-	 * @return The Postal Code for the  Address.
+	 * @return The Postal Code for the Standard/Billing/Delivery Address.
 	 */
 	public String getPostalCode() {
 		return postalCode;
 	}
 	
 	/**
-	 * 
-	 * @param postalCode The Postal Code for the  Address.
+	 * @param postalCode The Postal Code for the Standard/Billing/Delivery Address.
 	 */
 	@JsonProperty("PostalCode")
 	public void setPostalCode(String postalCode) {
@@ -153,16 +135,14 @@ public class Address extends BaseObject {
 	}
 	
 	/**
-	 * 
-	 * @return The Address Type Standard (0), Billing (1), or Delivery (2)
+	 * @return The Address Type - Standard (0), Billing (1), or Delivery (2)
 	 */
 	public AddressType getType() {
 		return type;
 	}
 	
 	/**
-	 * 
-	 * @param type The Address Type Standard (0), Billing (1), or Delivery (2)
+	 * @param type The Address Type - Standard (0), Billing (1), or Delivery (2)
 	 */
 	@JsonProperty("Type")
 	public void setType(AddressType type) {
@@ -170,7 +150,6 @@ public class Address extends BaseObject {
 	}
 	
 	/**
-	 * 
 	 * @return  These are the 2 letter country codes published by ISO. Details can be found at http://www.nationsonline.org/oneworld/countrycodes.htm
 	 */
 	public String getCountryCode() {
@@ -178,7 +157,6 @@ public class Address extends BaseObject {
 	}
 	
 	/**
-	 * 
 	 * @param countryCode These are the 2 letter country codes published by ISO. Details can be found at http://www.nationsonline.org/oneworld/countrycodes.htm
 	 */
 	@JsonProperty("CountryCode")
@@ -187,7 +165,6 @@ public class Address extends BaseObject {
 	}
 	
 	/**
-	 * 
 	 * @return  Current Timestamp.
 	 */
 	@JsonIgnore()
@@ -201,7 +178,6 @@ public class Address extends BaseObject {
 	}
 	
 	/**
-	 * 
 	 * @param timestamp  Current Timestamp.
 	 */
 	@JsonProperty("Timestamp")
@@ -210,7 +186,6 @@ public class Address extends BaseObject {
 	}
 	
 	/**
-	 * 
 	 * @return  Is this the default address?
 	 */
 	public boolean getIsDefault() {
@@ -218,7 +193,6 @@ public class Address extends BaseObject {
 	}
 	
 	/**
-	 * 
 	 * @param isDefault Is this the default address?
 	 */
 	@JsonProperty("IsDefault")

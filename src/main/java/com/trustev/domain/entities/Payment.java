@@ -5,10 +5,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
- * A Payment within a Trustev Case
- * 
- * @author jack.mcauliffe
- *
+ * Payments includes forwarding the Payment Type (Credit/Debit Card, PayPal…), and the BIN/IIN Number of the relevant card should it be available.
  */
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class Payment extends BaseObject {
@@ -17,7 +14,6 @@ public class Payment extends BaseObject {
 	
 		
 	/**
-	 * 
 	 * @return The type of Payment method used
 	 */
 	public PaymentType getPaymentType() {
@@ -25,7 +21,6 @@ public class Payment extends BaseObject {
 	}
 	
 	/**
-	 * 
 	 * @param paymentType The type of Payment method used
 	 */
 	@JsonProperty("PaymentType")
@@ -35,7 +30,6 @@ public class Payment extends BaseObject {
 	
 	
 	/**
-	 * 
 	 * @return The BIN Number - the first 6 digits of a Debit/Credit Card Number.
 	 */
 	public String getBinNumber() {
@@ -43,7 +37,6 @@ public class Payment extends BaseObject {
 	}
 	
 	/**
-	 * 
 	 * @param bINNumber The BIN Number - the first 6 digits of a Debit/Credit Card Number.
 	 */
 	@JsonProperty("BINNumber")

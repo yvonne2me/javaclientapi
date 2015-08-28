@@ -7,10 +7,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
- * The Status within a case
- * 
- * @author jack.mcauliffe
- *
+ * The CaseStatus is used to let Trustev know the current status of any Case. When the status of a Case changes, please update the status of the Case.
  */
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class CaseStatus extends BaseObject {
@@ -21,7 +18,6 @@ public class CaseStatus extends BaseObject {
 	
 		
 	/**
-	 * 
 	 * @return The Status Type of the Trustev Case
 	 */
 	public CaseStatusType getStatus() {
@@ -29,7 +25,6 @@ public class CaseStatus extends BaseObject {
 	}
 	
 	/**
-	 * 
 	 * @param status The Status Type of the Trustev Case
 	 */
 	@JsonProperty("Status")
@@ -38,7 +33,6 @@ public class CaseStatus extends BaseObject {
 	}
 	
 	/**
-	 * 
 	 * @return Comment on the Status
 	 */
 	public String getComment() {
@@ -46,7 +40,6 @@ public class CaseStatus extends BaseObject {
 	}
 	
 	/**
-	 * 
 	 * @param comment Comment on the Status
 	 */
 	@JsonProperty("Comment")
@@ -55,7 +48,6 @@ public class CaseStatus extends BaseObject {
 	}
 	
 	/**
-	 * 
 	 * @return Current Timestamp
 	 */
 	@JsonIgnore()
@@ -69,7 +61,6 @@ public class CaseStatus extends BaseObject {
 	}
 	
 	/**
-	 * 
 	 * @param timestamp Current Timestamp
 	 */
 	@JsonProperty("Timestamp")

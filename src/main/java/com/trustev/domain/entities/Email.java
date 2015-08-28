@@ -3,10 +3,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
- * Email Address for a customer
- * 
- * @author jack.mcauliffe
- *
+ * The Email object
  */
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class Email extends BaseObject {
@@ -15,16 +12,14 @@ public class Email extends BaseObject {
 	
 		
 	/**
-	 * 
-	 * @return Email Address of the customer
+	 * @return Email Address of the Customer
 	 */
 	public String getEmailAddress() {
 		return emailAddress;
 	}
 	
 	/**
-	 * 
-	 * @param emailAddress Email Address of the customer
+	 * @param emailAddress Email Address of the Customer
 	 */
 	@JsonProperty("EmailAddress")
 	public void setEmailAddress(String emailAddress) {
@@ -32,8 +27,7 @@ public class Email extends BaseObject {
 	}
 	
 	/**
-	 * 
-	 * @return Is this is the default email for the customer?
+	 * @return Is this is the default Email for the Customer?
 	 */
 	public boolean isDefault() {
 		return isDefault;
@@ -41,7 +35,7 @@ public class Email extends BaseObject {
 	
 	/**
 	 * 
-	 * @param isDefault Is this is the default email for the customer?
+	 * @param isDefault Is this is the default Email for the Customer?
 	 */
 	@JsonProperty("IsDefault")
 	public void setDefault(boolean isDefault) {

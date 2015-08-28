@@ -12,39 +12,14 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import com.trustev.domain.exceptions.TrustevApiException;
 
 /**
- * Case object is the top level object in the trustev API.  Decisions are made by instantiating a Case object, populating the values and calling the MakeDecision method
- * 
- * 
- * <pre>
- * <code>
- * String caseNumber = "MyCase1234" // this case number is chosen by merchant and must be unique
- * UUID sessionId = UUID.fromString("7e740ea2-7e8b-43d8-a3b1-4073ca336e28");  // session id returned from js file
- * Case myCase = new Case(sessionId);
- * myCase.setCaseNumber(caseNumber);
- * myCase.setTimestamp(new Date());
- * Customer customer = new Customer();
- * customer.setFirstName("Gene");
- * customer.setLastName("Geniune");
- * myCase.setCustomer(customer);
- * Decision decision = myCase.MakeDecision();
- * if (decision.getResult() == DecisionResult.Pass) {
- *   // process order
- * }
- * else {
- *   // order is fraud
- * }
- * </code>
- * </pre>
- * 
- * @author jack.mcauliffe
- *
+ * The Case Object is the what Trustev bases its Decision on. It is a container for all the information that can be provided.
+ * The more information that you provide us with, the more accurate our Decision, so please populate as much as possible.
  */
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class Case extends BaseObject{
 	
 	
 	/**
-	 * 
 	 * @param sessionId SessionId is required when adding a Trustev Case. SessionId is available through Trustev.js as a publicly accessible variable - TrustevV2.SessionId
 	 * @throws TrustevApiException If the sessionId passed in is null
 	 */
@@ -66,21 +41,23 @@ public class Case extends BaseObject{
 	}
 	
 	/**
-	 * @return The CaseNumber is chosen by the Merchant to uniquely identify the Trustev Case. It can be an alphanumeric string of your liking. Please see our Testing Guide to find out how to use the CaseNumber to get expected Trustev Decisions during Integration.
-	 */
+	* @return The CaseNumber is chosen by the Merchant to uniquely identify the Trustev Case. It can be an alphanumeric string of your liking, but it must be unique.
+	* We would always recommend that Merchants set the Case Number as the internal Order Number so it is easy to reference in later reporting. 
+    * Please see our Testing Guide to find out how to use the CaseNumber to get expected Trustev Decisions during Integration.
+	*/
 	public String getCaseNumber() {
 		return caseNumber;
 	}
 	
 	/**
-	 * @return The transaction object
+	 * @return Transaction Object - includes details such as Transaction Amount, Currency, Items and Transaction delivery/billing address.
 	 */
 	public Transaction getTransaction() {
 		return transaction;
 	}
 	
 	/**
-	 * @param transaction The CaseNumber is chosen by the Merchant to uniquely identify the Trustev Case. It can be an alphanumeric string of your liking. Please see our Testing Guide to find out how to use the CaseNumber to get expected Trustev Decisions during Integration.
+	 * @param transaction Transaction Object - includes details such as Transaction Amount, Currency, Items and Transaction delivery/billing address.
 	 */
 	@JsonProperty("Transaction")
 	public void setTransaction(Transaction transaction) {
@@ -88,7 +65,9 @@ public class Case extends BaseObject{
 	}
 	
 	/**
-	 * @return Customer Object - includes details like First/Last name of Customer, address details, phone numbers, email addresses. Social details may also be included here where available. Please see Customer object for further parameter information.
+	 * @return Customer Object - includes details like First/Last name of Customer, address details, phone numbers, email addresses. 
+     * Social details may also be included here where available. 
+     * Please see Customer object for further parameter information.
 	 */
 	public Customer getCustomer() {
 		return customer;
@@ -96,7 +75,9 @@ public class Case extends BaseObject{
 	
 	/**
 	 * 
-	 * @param customer Customer Object - includes details like First/Last name of Customer, address details, phone numbers, email addresses. Social details may also be included here where available. Please see Customer object for further parameter information.
+	 * @param customer Customer Object - includes details like First/Last name of Customer, address details, phone numbers, email addresses. 
+     * Social details may also be included here where available. 
+     * Please see Customer object for further parameter information.
 	 */
 	@JsonProperty("Customer")
 	public void setCustomer(Customer customer) {
@@ -104,14 +85,14 @@ public class Case extends BaseObject{
 	}
 	
 	/**
-	 * @return A Status includes the Order Status and a Comment section. Trustev require that a Status is attached to a Trustev Case so that we can learn from the decision that you make on a Trustev Case. Please see Why add Statuses? for more information.
+	 * @return A Status includes the Order Status and a Comment section. Trustev require that a Status is attached to a Trustev Case so that we can learn from the decision that you make on a Trustev Case. 
 	 */
 	public Collection<CaseStatus> getStatuses() {
 		return statuses;
 	}
 	
 	/**
-	 * @param statuses A Status includes the Order Status and a Comment section. Trustev require that a Status is attached to a Trustev Case so that we can learn from the decision that you make on a Trustev Case. Please see Why add Statuses? for more information.
+	 * @param statuses A Status includes the Order Status and a Comment section. Trustev require that a Status is attached to a Trustev Case so that we can learn from the decision that you make on a Trustev Case. 
 	 */
 	@JsonProperty("Statuses")
 	public void setStatuses(Collection<CaseStatus> statuses) {
