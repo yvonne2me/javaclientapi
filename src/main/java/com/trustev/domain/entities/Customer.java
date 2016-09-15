@@ -147,6 +147,23 @@ public class Customer extends BaseObject{
 		this.accountNumber = accountNumber;
 	}
 	
+	/**
+	 * 
+	 * @return The Account number of the Customer.
+	 */
+	public String getSocialSecurityNumber() {
+		return this.socialSecurityNumber;
+	}
+	
+	/**
+	 * 
+	 * @param accountNumber The Account number of the Customer.
+	 */
+	@JsonProperty("SocialSecurityNumber")
+	public void setSocialSecurityNumber(String socialSecurityNumber) {
+		this.socialSecurityNumber = socialSecurityNumber;
+	}
+	
 	private String firstName;
 	private String lastName;
 	private Collection<Email> email;
@@ -155,5 +172,6 @@ public class Customer extends BaseObject{
 	private Collection<Address> addresses;
 	private Collection<SocialAccount> socialAccounts;
 	private String accountNumber;
+	private String socialSecurityNumber;
 	
 }

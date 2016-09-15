@@ -1,7 +1,6 @@
 package com.trustev.integration;
 
 
-import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.UUID;

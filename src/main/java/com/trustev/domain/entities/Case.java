@@ -135,6 +135,24 @@ public class Case extends BaseObject{
 		this.timestamp = timestamp;
 	}
 	
+	
+	/**
+	 * @param caseType to set
+	 */
+	@JsonProperty("CaseType")
+	public CaseType getCaseType() {
+		return this.caseType;
+	}
+	
+	/**
+	 * @param caseType to set
+	 */
+	@JsonProperty("CaseType")
+	public void setCaseType(CaseType caseType) {
+		this.caseType = caseType;
+	}
+	
+	
 	private UUID sessionId;
 	
 	private String caseNumber;
@@ -148,4 +166,6 @@ public class Case extends BaseObject{
 	private Collection<Payment> payments;
 	
 	private Date timestamp;
+	
+	private CaseType caseType;
 }

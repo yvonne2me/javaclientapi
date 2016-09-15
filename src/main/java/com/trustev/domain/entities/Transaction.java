@@ -95,6 +95,21 @@ public class Transaction extends BaseObject {
 		this.items = items;
 	}
 	
+	/**
+	 * @return Email Object
+	 */
+	public Collection<Email> getEmails() {
+		return this.emails;
+	}
+	
+	/**
+	 * @param emails Email Object
+	 */
+	@JsonProperty("Emails")
+	public void setEmails(Collection<Email> emails) {
+		this.emails = emails;
+	}
+	
 	private double totalTransactionValue;
 	
 	private String currency;
@@ -104,5 +119,7 @@ public class Transaction extends BaseObject {
 	private Collection<Address> addresses;
 	
 	private Collection<TransactionItem> items;
+	
+    public Collection<Email> emails;
 	
 }
