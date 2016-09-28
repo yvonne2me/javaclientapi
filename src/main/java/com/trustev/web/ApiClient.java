@@ -731,9 +731,13 @@ public class ApiClient {
 		}
 		
 		@JsonProperty("ExpireAt")
-		public void setExpireAt(Date expireAt) {
-			this.expireAt = expireAt;
+		public void setExpireAt(String expireAt) throws ParseException {
+			String expireTimeStamp = expireAt.substring(0, expireAt.lastIndexOf(".")+ 1 ) + "00Z";
+			DateFormat m_ISO8601Local = new SimpleDateFormat ("yyyy-MM-dd'T'HH:mm:ss.SS'Z'");
+			m_ISO8601Local.setTimeZone(TimeZone.getTimeZone("UTC"));
+			this.expireAt = m_ISO8601Local.parse(expireTimeStamp);
 		}
+		
 		public String getCredentialType() {
 			return credentialType;
 		}
