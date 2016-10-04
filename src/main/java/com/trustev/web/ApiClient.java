@@ -714,8 +714,13 @@ public class ApiClient {
 	    }
 		
 		private String FormatTimeStamp(Date d) {
-			return (d == null) ? null : new SimpleDateFormat(
-					"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(d);
+			if (d == null) {
+				return null;
+			} 
+			DateFormat m_ISO8601Local = new SimpleDateFormat ("yyyy-MM-dd'T'HH:mm:ss.SS'Z'");
+			m_ISO8601Local.setTimeZone(TimeZone.getTimeZone("UTC"));
+			
+			return m_ISO8601Local.format(d);
 		}
 	}
 	
