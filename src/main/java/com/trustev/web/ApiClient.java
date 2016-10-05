@@ -669,11 +669,8 @@ public class ApiClient {
 		}
 		
 		public String getPasswordHash()
-		{
-			if (passwordHash == null) {
-				passwordHash = CreateHash(ApiClient.password, TokenRequest.timestamp, ApiClient.secret);
-			}
-			return passwordHash;
+		{	
+			return CreateHash(ApiClient.password, TokenRequest.timestamp, ApiClient.secret);
 		}
 		
 		public String getTimeStamp() {
@@ -681,10 +678,8 @@ public class ApiClient {
 		}
 		
 		public String getUserNameHash() {
-			if (userNameHash == null) {
-				userNameHash = CreateHash(ApiClient.userName, this.timestamp, ApiClient.secret);
-			}
-			return userNameHash;
+			
+			return CreateHash(ApiClient.userName, TokenRequest.timestamp, ApiClient.secret);
 		}
 		
 		private static String CreateHash(String value, String timestamp, String sharedsecret) {
@@ -717,7 +712,7 @@ public class ApiClient {
 			if (d == null) {
 				return null;
 			} 
-			DateFormat m_ISO8601Local = new SimpleDateFormat ("yyyy-MM-dd'T'HH:mm:ss.SS'Z'");
+			DateFormat m_ISO8601Local = new SimpleDateFormat ("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 			m_ISO8601Local.setTimeZone(TimeZone.getTimeZone("UTC"));
 			
 			return m_ISO8601Local.format(d);
@@ -740,8 +735,8 @@ public class ApiClient {
 		
 		@JsonProperty("ExpireAt")
 		public void setExpireAt(String expireAt) throws ParseException {
-			String expireTimeStamp = expireAt.substring(0, expireAt.lastIndexOf(".")+ 1 ) + "00Z";
-			DateFormat m_ISO8601Local = new SimpleDateFormat ("yyyy-MM-dd'T'HH:mm:ss.SS'Z'");
+			String expireTimeStamp = expireAt.substring(0, expireAt.lastIndexOf(".")+ 1 ) + "000Z";
+			DateFormat m_ISO8601Local = new SimpleDateFormat ("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 			m_ISO8601Local.setTimeZone(TimeZone.getTimeZone("UTC"));
 			this.expireAt = m_ISO8601Local.parse(expireTimeStamp);
 		}
