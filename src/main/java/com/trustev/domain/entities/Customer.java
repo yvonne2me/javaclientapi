@@ -157,7 +157,7 @@ public class Customer extends BaseObject{
 	
 	/**
 	 * 
-	 * @param accountNumber The Account number of the Customer.
+	 * @param socialSecurityNumber The Social Security Number of the customer
 	 */
 	@JsonProperty("SocialSecurityNumber")
 	public void setSocialSecurityNumber(String socialSecurityNumber) {

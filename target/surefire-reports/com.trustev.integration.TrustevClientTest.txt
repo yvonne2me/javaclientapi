@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.trustev.integration.TrustevClientTest
--------------------------------------------------------------------------------
-Tests run: 38, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 28.735 sec

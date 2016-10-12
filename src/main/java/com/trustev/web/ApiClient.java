@@ -1,15 +1,13 @@
 package com.trustev.web;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.TimeZone;
-import java.text.DateFormat;
-import java.text.ParseException;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.MediaType;
@@ -24,7 +22,16 @@ import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.WebResource.Builder;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.trustev.domain.entities.*;
+import com.trustev.domain.entities.Address;
+import com.trustev.domain.entities.Case;
+import com.trustev.domain.entities.CaseStatus;
+import com.trustev.domain.entities.Customer;
+import com.trustev.domain.entities.Decision;
+import com.trustev.domain.entities.Email;
+import com.trustev.domain.entities.Payment;
+import com.trustev.domain.entities.SocialAccount;
+import com.trustev.domain.entities.Transaction;
+import com.trustev.domain.entities.TransactionItem;
 import com.trustev.domain.exceptions.TrustevApiException;
 
 	/*
@@ -52,7 +59,6 @@ public class ApiClient {
 	 * @param userName Your Trustev Username
 	 * @param password Your Trustev Password
 	 * @param secret Your Trustev Secret
-	 * @throws TrustevApiException
 	 */
 	public static void SetUp(String userName, String password, String secret)
 	{
@@ -65,7 +71,7 @@ public class ApiClient {
 	 * Post your Case to the TrustevClient Api
 	 * @param kase Your Case which you want to POST
 	 * @return The Case, along with the Case Id that the TrustevClient API have assigned it.
-	 * @throws TrustevApiException
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Case postCase(Case kase) throws TrustevApiException{
 		String url = "/Case";
@@ -77,8 +83,8 @@ public class ApiClient {
 	 * Update your Case with the case Id, provided with the new Case object
 	 * @param kase Your Case which you want to PUT and update the existing Case with.
 	 * @param caseId The Case Id of the Case you want to update. The TrustevClient API will have assigned this Id and returned it in the response Case from the PostCase Method
-	 * @return 
-	 * @throws TrustevApiException
+	 * @return The case that was just updated
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Case updateCase(Case kase, String caseId) throws TrustevApiException{
 		String url = "/Case/" + caseId;
@@ -89,8 +95,8 @@ public class ApiClient {
 	/**
 	 * Get the Case with the Id caseId
 	 * @param caseId The Case Id of the Case you want to get. The TrustevClient API will have assigned this Id and returned it in the response Case from the PostCase Method
-	 * @return
-	 * @throws TrustevApiException
+	 * @return The Case with Id equal to caseId
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Case getCase(String caseId) throws TrustevApiException{
 		String url = "/Case/" + caseId;
@@ -102,8 +108,8 @@ public class ApiClient {
 	/**
 	 * Get a Decision on a Case with Id caseId.
 	 * @param caseId The Id of a Case which you have already posted to the TrustevClient API. 
-	 * @return
-	 * @throws TrustevApiException 
+	 * @return The Decision with Id equals to caseId
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Decision getDecision(String caseId) throws TrustevApiException
 	{
@@ -116,8 +122,8 @@ public class ApiClient {
 	 * Post your Customer to an existing Case
 	 * @param caseId The Case Id of a Case which you have already posted
 	 * @param customer Your Customer which you want to post
-	 * @return
-	 * @throws TrustevApiException
+	 * @return The Customer that was posted on this method
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Customer postCustomer(String caseId, Customer customer) throws TrustevApiException
 	{
@@ -130,8 +136,8 @@ public class ApiClient {
 	 * Update the Customer on a Case which already contains a Customer
 	 * @param caseId The Case Id of a Case which you have already posted
 	 * @param customer Your Customer which you want to Put and update the existing Customer with
-	 * @return
-	 * @throws TrustevApiException
+	 * @return The updated Customer object
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Customer updateCustomer(String caseId, Customer customer) throws TrustevApiException
 	{
@@ -143,8 +149,8 @@ public class ApiClient {
 	/**
 	 * Get the Customer attached to the Case
 	 * @param caseId The case Id of the the Case with the Customer you want to get
-	 * @return
-	 * @throws TrustevApiException
+	 * @return The Customer with id equals to caseId
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Customer getCustomer(String caseId) throws TrustevApiException
 	{
@@ -157,8 +163,8 @@ public class ApiClient {
 	 * Post your Transaction to an existing Case
 	 * @param caseId The Case Id of a Case which you have already posted
 	 * @param transaction Your Transaction which you want to post
-	 * @return
-	 * @throws TrustevApiException
+	 * @return The transaction that was just posted
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Transaction postTransaction(String caseId, Transaction transaction) throws TrustevApiException
 	{
@@ -171,8 +177,8 @@ public class ApiClient {
 	 * Update the Transaction on a Case which already contains a Transaction
 	 * @param caseId The Case Id of a Case which you have already posted
 	 * @param transaction Your Transaction which you want to Put and update the existing Transaction with
-	 * @return
-	 * @throws TrustevApiException
+	 * @return The updated Transaction object
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Transaction updateTransaction(String caseId, Transaction transaction) throws TrustevApiException
 	{
@@ -184,8 +190,8 @@ public class ApiClient {
 	/**
 	 * Get the Transaction attached to the Case
 	 * @param caseId The Case Id of the the Case with the Transaction you want to get
-	 * @return
-	 * @throws TrustevApiException
+	 * @return the Transaction with id equals to caseId
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Transaction getTransaction(String caseId) throws TrustevApiException
 	{
@@ -198,8 +204,8 @@ public class ApiClient {
 	 * Post your CaseStatus to an existing Case
 	 * @param caseId The Case Id of a Case which you have already posted
 	 * @param caseStatus Your CaseStatus which you want to post
-	 * @return
-	 * @throws TrustevApiException
+	 * @return the CaseStatus object that was just posted
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static CaseStatus postCaseStatus(String caseId, CaseStatus caseStatus) throws TrustevApiException
 	{
@@ -212,8 +218,8 @@ public class ApiClient {
 	 * Get a specific status from a Case
 	 * @param caseId The Case Id of a Case which you have already posted
 	 * @param caseStatusId The Id of the CaseStatus you want to get
-	 * @return
-	 * @throws TrustevApiException
+	 * @return the CaseStatus object with id equals to caseId
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static CaseStatus getCaseStatus(String caseId, String caseStatusId) throws TrustevApiException
 	{
@@ -225,8 +231,8 @@ public class ApiClient {
 	/**
 	 * Get all the Statuses from a Case
 	 * @param caseId The Case Id of a Case which you have already posted
-	 * @return
-	 * @throws TrustevApiException
+	 * @return A Collection of CaseStatus objects that match caseId
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Collection<CaseStatus> getCaseStatuses(String caseId) throws TrustevApiException
 	{
@@ -240,8 +246,8 @@ public class ApiClient {
 	 * Post your CustomerAddress to an existing Customer on an existing Case
 	 * @param caseId The Case Id of a Case with the Customer  which you have already posted
 	 * @param customerAddress Your CustomerAddress which you want to post
-	 * @return
-	 * @throws TrustevApiException
+	 * @return The Address object that was just posted in this call
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Address postCustomerAddress(String caseId, Address customerAddress) throws TrustevApiException
 	{
@@ -255,8 +261,8 @@ public class ApiClient {
 	 * @param caseId The Case Id of a Case which you have already posted
 	 * @param customerAddress The CustomerAddress you want to update the existing CustomerAddress to
 	 * @param customerAddressId The id of the CustomerAddress you want to update
-	 * @return
-	 * @throws TrustevApiException
+	 * @return The updated Address object
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Address updateCustomerAddress(String caseId, Address customerAddress, String customerAddressId) throws TrustevApiException
 	{
@@ -269,8 +275,8 @@ public class ApiClient {
 	 * Get a specific CustomerAddress from a Case
 	 * @param caseId The Case Id of a Case with the Customer which you have already posted
 	 * @param customerAddressId The Id of the CustomerAddress you want to get
-	 * @return
-	 * @throws TrustevApiException
+	 * @return The Address object that matches caseId
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Address getCustomerAddress(String caseId, String customerAddressId) throws TrustevApiException
 	{
@@ -282,8 +288,8 @@ public class ApiClient {
 	/**
 	 * Get all the Addresses from a Customer on a Case
 	 * @param caseId The Case Id of a Case with the Customer which you have already posted
-	 * @return
-	 * @throws TrustevApiException
+	 * @return A Collection of Address objects that match caseId
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Collection<Address> getCustomerAddresses(String caseId) throws TrustevApiException
 	{
@@ -297,8 +303,8 @@ public class ApiClient {
 	 * Post your Email to an existing Customer on an existing Case
 	 * @param caseId The Case Id of a Case with the Customer  which you have already posted
 	 * @param email Your Email which you want to post
-	 * @return
-	 * @throws TrustevApiException
+	 * @return the Email object that was just posted
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Email postEmail(String caseId, Email email) throws TrustevApiException
 	{
@@ -312,8 +318,8 @@ public class ApiClient {
 	 * @param caseId The Case Id of a Case which you have already posted
 	 * @param email The Email you want to update the existing Email to
 	 * @param emailId The id of the Email you want to update
-	 * @return
-	 * @throws TrustevApiException
+	 * @return the updated Email object
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Email updateEmail(String caseId, Email email, String emailId) throws TrustevApiException
 	{
@@ -326,8 +332,8 @@ public class ApiClient {
 	 * Get a specific Email from a Case
 	 * @param caseId The Case Id of a Case with the Customer which you have already posted
 	 * @param emailId The Id of the Email you want to get
-	 * @return
-	 * @throws TrustevApiException
+	 * @return the Email object which id matches caseId
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Email getEmail(String caseId, String emailId) throws TrustevApiException
 	{
@@ -339,8 +345,8 @@ public class ApiClient {
 	/**
 	 * Get all the Emails from a Case
 	 * @param caseId The Case Id of a Case with the Customer  which you have already posted
-	 * @return
-	 * @throws TrustevApiException
+	 * @return A Collection of Email objects that match caseId
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Collection<Email> getEmails(String caseId) throws TrustevApiException
 	{
@@ -354,8 +360,8 @@ public class ApiClient {
 	 * Post your Payment to an existing Case
 	 * @param caseId The Case Id of a Case which you have already posted
 	 * @param payment Your Payment which you want to post
-	 * @return
-	 * @throws TrustevApiException
+	 * @return the Payment object that was just posted
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Payment postPayment(String caseId, Payment payment) throws TrustevApiException
 	{
@@ -369,8 +375,8 @@ public class ApiClient {
 	 * @param caseId The Case Id of a Case which you have already posted
 	 * @param payment The Payment you want to update the existing Payment to
 	 * @param paymentId The id of the Payment you want to update
-	 * @return
-	 * @throws TrustevApiException
+	 * @return the updated Payment object
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Payment updatePayment(String caseId, Payment payment, String paymentId) throws TrustevApiException
 	{
@@ -383,8 +389,8 @@ public class ApiClient {
 	 * Get a specific Payment from a Case
 	 * @param caseId The Case Id of a Case which you have already posted
 	 * @param paymentId The Id of the Payment you want to get
-	 * @return
-	 * @throws TrustevApiException
+	 * @return The Payment object that matches paymentId
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Payment getPayment(String caseId, String paymentId) throws TrustevApiException
 	{
@@ -396,8 +402,8 @@ public class ApiClient {
 	/**
 	 * Get all the Payments from a Case
 	 * @param caseId The Case Id of a Case which you have already posted
-	 * @return
-	 * @throws TrustevApiException
+	 * @return A collection of Payment objects that match caseId
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Collection<Payment> getPayments(String caseId) throws TrustevApiException
 	{
@@ -411,8 +417,8 @@ public class ApiClient {
 	 * Post your SocialAccount to an existing Customer on an existing Case
 	 * @param caseId The Case Id of a Case with the Customer  which you have already posted
 	 * @param socialAccount Your SocialAccount which you want to post
-	 * @return
-	 * @throws TrustevApiException
+	 * @return The SocialAccount object that was just posted
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static SocialAccount postSocialAccount(String caseId, SocialAccount socialAccount) throws TrustevApiException
 	{
@@ -426,8 +432,8 @@ public class ApiClient {
 	 * @param caseId The Case Id of a Case which you have already posted
 	 * @param socialAccount The SocialAccount you want to update the existing SocialAccount to
 	 * @param socialAccountId The id of the SocialAccount you want to update
-	 * @return
-	 * @throws TrustevApiException
+	 * @return The updated SocialAccount object
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static SocialAccount updateSocialAccount(String caseId, SocialAccount socialAccount, String socialAccountId) throws TrustevApiException
 	{
@@ -440,8 +446,8 @@ public class ApiClient {
 	 * Get a specific SocialAccount from a Case
 	 * @param caseId The Case Id of a Case with the Customer which you have already posted
 	 * @param socialAccountId The Id of the SocialAccount you want to get
-	 * @return
-	 * @throws TrustevApiException
+	 * @return The SocialAccount object that matches socialAccountId
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static SocialAccount getSocialAccount(String caseId, String socialAccountId) throws TrustevApiException
 	{
@@ -453,8 +459,8 @@ public class ApiClient {
 	/**
 	 * Get all the SocialAccounts from a Customer on a Case
 	 * @param caseId The Case Id of a Case with the Customer  which you have already posted
-	 * @return
-	 * @throws TrustevApiException
+	 * @return A Collection of SocialAccount objects that match caseId
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Collection<SocialAccount> getSocialAccounts(String caseId) throws TrustevApiException
 	{
@@ -468,8 +474,8 @@ public class ApiClient {
 	 * Post your TransactionAddress to an existing Transaction on an existing Case
 	 * @param caseId The Case Id of a Case with the Transaction which you have already posted
 	 * @param transactionAddress Your TransactionAddress which you want to post
-	 * @return
-	 * @throws TrustevApiException
+	 * @return the Address object that was just posted
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Address postTransactionAddress(String caseId, Address transactionAddress) throws TrustevApiException
 	{
@@ -483,8 +489,8 @@ public class ApiClient {
 	 * @param caseId The Case Id of a Case which you have already posted
 	 * @param transactionAddress The TransactionAddress you want to update the existing TransactionAddress to
 	 * @param transactionAddressId The id of the TransactionAddress you want to update
-	 * @return
-	 * @throws TrustevApiException
+	 * @return the updated Address object
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Address updateTransactionAddress(String caseId, Address transactionAddress, String transactionAddressId) throws TrustevApiException
 	{
@@ -497,8 +503,8 @@ public class ApiClient {
 	 * Get a specific TransactionAddress from a Case
 	 * @param caseId The Case Id of a Case with the Customer which you have already posted
 	 * @param transactionAddressId The Id of the TransactionAddress you want to get
-	 * @return
-	 * @throws TrustevApiException
+	 * @return The address object that matches transactionAddressId
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Address getTransactionAddress(String caseId, String transactionAddressId) throws TrustevApiException
 	{
@@ -510,8 +516,8 @@ public class ApiClient {
 	/**
 	 * Get all the Addresses from a Transaction on a Case
 	 * @param caseId The Case Id of a Case with the Transaction which you have already posted
-	 * @return
-	 * @throws TrustevApiException
+	 * @return A Collection of Address
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Collection<Address> getTransactionAddresses(String caseId) throws TrustevApiException
 	{
@@ -525,8 +531,8 @@ public class ApiClient {
 	 * Post your TransactionItem to an existing Transaction on an existing Case
 	 * @param caseId The Case Id of a Case with the Transaction which you have already posted
 	 * @param transactionItem Your TransactionItem which you want to post
-	 * @return
-	 * @throws TrustevApiException
+	 * @return The posted TransactionItem
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static TransactionItem postTransactionItem(String caseId, TransactionItem transactionItem) throws TrustevApiException
 	{
@@ -540,8 +546,8 @@ public class ApiClient {
 	 * @param caseId The Case Id of a Case which you have already posted
 	 * @param transactionItem The TransactionAddress you want to update the existing TransactionItem to
 	 * @param transactionItemId The id of the TransactionItem you want to update
-	 * @return
-	 * @throws TrustevApiException
+	 * @return The updated TransactionItem
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static TransactionItem updateTransactionItem(String caseId, TransactionItem transactionItem, String transactionItemId) throws TrustevApiException
 	{
@@ -554,8 +560,8 @@ public class ApiClient {
 	 * Get a specific TransactionItem from a Case
 	 * @param caseId The Case Id of a Case with the Customer which you have already posted
 	 * @param transactionItemId The Id of the TransactionItem you want to get
-	 * @return
-	 * @throws TrustevApiException
+	 * @return the TransactionItem that matches transactionItemId
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static TransactionItem getTransactionItem(String caseId, String transactionItemId) throws TrustevApiException
 	{
@@ -567,8 +573,8 @@ public class ApiClient {
 	/**
 	 * Get all the TransactionItems from a Transaction on a Case
 	 * @param caseId The Case Id of a Case with the Transaction which you have already posted
-	 * @return
-	 * @throws TrustevApiException
+	 * @return A Collection of TransactionItem objects that match caseId
+	 * @throws TrustevApiException A Custom Trustev Api Exception
 	 */
 	public static Collection<TransactionItem> getTransactionItems(String caseId) throws TrustevApiException
 	{
@@ -587,7 +593,7 @@ public class ApiClient {
 	 * @param isAuthenticationNeeded Does this API call require the X-Authorization header
 	 */
 	private static Object PerformHttpCall(String uriPath, String httpMethod, Class responseType, Object entity, Boolean isAuthenticationNeeded)
-			throws TrustevApiException
+			throws TrustevApiException 
 	{
 		Object responseObject = null;
 		

@@ -21,6 +21,7 @@ public class Case extends BaseObject{
 	
 	/**
 	 * @param sessionId SessionId is required when adding a Trustev Case. SessionId is available through Trustev.js as a publicly accessible variable - TrustevV2.SessionId
+	 * @param caseNumber The CaseNumber of the case being created
 	 * @throws TrustevApiException If the sessionId passed in is null
 	 */
 	@JsonCreator
@@ -137,7 +138,7 @@ public class Case extends BaseObject{
 	
 	
 	/**
-	 * @param caseType to set
+	 * @return The CaseType of this Case
 	 */
 	@JsonProperty("CaseType")
 	public CaseType getCaseType() {
