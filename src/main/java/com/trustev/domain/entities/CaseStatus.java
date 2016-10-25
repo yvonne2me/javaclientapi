@@ -1,7 +1,6 @@
 package com.trustev.domain.entities;
 
 import java.util.Date;
-
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;

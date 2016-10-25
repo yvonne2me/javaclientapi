@@ -4,14 +4,16 @@ import java.util.Collection;
 import java.util.Date;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 
 /**
- * The Customer object includes the information on a Customer such as Address, Names, Email, Phone Number and Social Account information.
+ * The Customer object includes the information on a Customer such as Address, Names, Email, and Phone Number information.
  */
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Customer extends BaseObject{
 	
 		
@@ -115,23 +117,6 @@ public class Customer extends BaseObject{
 	
 	/**
 	 * 
-	 * @return Social Account Object  Contains Short Term and Long Term Access Tokens, along with Social Account Ids and Types. See Trustev Integration Documentation, http://developers.trustev.com/v2 for more information.
-	 */
-	public Collection<SocialAccount> getSocialAccounts() {
-		return socialAccounts;
-	}
-	
-	/**
-	 * 
-	 * @param socialAccounts Social Account Object  Contains Short Term and Long Term Access Tokens, along with Social Account Ids and Types. See Trustev Integration Documentation, http://developers.trustev.com/v2 for more information.
-	 */
-	@JsonProperty("SocialAccounts")
-	public void setSocialAccounts(Collection<SocialAccount> socialAccounts) {
-		this.socialAccounts = socialAccounts;
-	}
-	
-	/**
-	 * 
 	 * @return The Account number of the Customer.
 	 */
 	public String getAccountNumber() {
@@ -170,7 +155,6 @@ public class Customer extends BaseObject{
 	private String phoneNumber;
 	private Date dateOfBirth;
 	private Collection<Address> addresses;
-	private Collection<SocialAccount> socialAccounts;
 	private String accountNumber;
 	private String socialSecurityNumber;
 	

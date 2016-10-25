@@ -15,7 +15,7 @@
   <dependency>
 	<groupId>com.trustev</groupId>
   	<artifactId>trustev-java</artifactId>
-  	<version>2.0.4</version>
+  	<version>2.0.5</version>
   </dependency>
 ```
 
@@ -49,11 +49,11 @@ This is a simple version of the Trustev Integration and it involves 4 simple ste
 ```java
 
 // 1. Set-Up the Trustev Api Client with your user credentials
-ApiClient.SetUp(userName, password, secret);
+ApiClient.SetUp(userName, password, secret, baseUrl);
 
 
 // 2. Create your case and POST this Case to the Trustev API.
-// You will need two bits of information for this setp
+// You will need two bits of information for this setup
 // 		SessionId : This is the SessionId that you have received from the Trustev JavaScript (Trustev.js)
 //					and transferred server-side.
 // 		CaseNumber : This is a number that you use to uniquely identify this Case - we recommend using your internal Order Number for the Case Number. 
@@ -94,7 +94,7 @@ We also provide detailed API endpoints for updating specific parts of your Case.
 ```java
 
 // 1. Set-Up the Trustev Api Client with your user credentials
-ApiClient.SetUp(userName, password, secret);
+ApiClient.SetUp(userName, password, secret, baseUrl);
 
 
 // 2. Create your Case.
@@ -139,7 +139,7 @@ CaseStatus returnStatus = ApiClient.postCaseStatus(responseCase.getId(), caseSta
 ```java
 
 // 1. Set-Up the Trustev Api Client with your user credentials
-ApiClient.SetUp(userName, password, secret);
+ApiClient.SetUp(userName, password, secret, baseUrl);
 
 
 // 2. Create your Case.

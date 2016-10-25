@@ -27,11 +27,12 @@ import com.trustev.domain.entities.Case;
 import com.trustev.domain.entities.CaseStatus;
 import com.trustev.domain.entities.Customer;
 import com.trustev.domain.entities.Decision;
+import com.trustev.domain.entities.DetailedDecision;
 import com.trustev.domain.entities.Email;
 import com.trustev.domain.entities.Payment;
-import com.trustev.domain.entities.SocialAccount;
 import com.trustev.domain.entities.Transaction;
 import com.trustev.domain.entities.TransactionItem;
+import com.trustev.domain.entities.BaseUrl;
 import com.trustev.domain.exceptions.TrustevApiException;
 
 	/*
@@ -50,7 +51,7 @@ public class ApiClient {
 		userName = "";
 		password = "";
 		secret = "";
-		baseUrl = "https://app.trustev.com/api/v2.0";
+		baseUrl = "";
 	}
 	
 	/**
@@ -59,12 +60,22 @@ public class ApiClient {
 	 * @param userName Your Trustev Username
 	 * @param password Your Trustev Password
 	 * @param secret Your Trustev Secret
+	 * @param baseUrl The base url for the api calls (either US or EU)
 	 */
-	public static void SetUp(String userName, String password, String secret)
+	public static void SetUp(String userName, String password, String secret, BaseUrl baseUrl)
 	{
 		ApiClient.userName = userName;
 		ApiClient.password = password;
 		ApiClient.secret = secret;
+		
+		if(baseUrl.equals(BaseUrl.US))
+		{
+			ApiClient.baseUrl = "https://app.trustev.com/api/v2.0";
+		}
+		else
+		{
+			ApiClient.baseUrl = "https://app-eu.trustev.com/api/v2.0";
+		}
 	}
 	
 	/**
@@ -115,6 +126,20 @@ public class ApiClient {
 	{
 		String url = "/Decision/" + caseId;
 		Decision response = (Decision)PerformHttpCall(url, HttpMethod.GET, Decision.class, null, true);
+		return response;
+	}
+	
+	
+	/**
+	 * Gets a Detailed Decision on a Case with Id caseId.
+	 * @param caseId The Id of a Case which you have already posted to the TrustevClient API. 
+	 * @return The Detailed Decision with Id equals to caseId
+	 * @throws TrustevApiException A Custom Trustev Api Exception
+	 */
+	public static DetailedDecision getDetailedDecision(String caseId) throws TrustevApiException
+	{
+		String url = "/DetailedDecision/" + caseId;
+		DetailedDecision response = (DetailedDecision)PerformHttpCall(url, HttpMethod.GET, DetailedDecision.class, null, true);
 		return response;
 	}
 	
@@ -410,63 +435,6 @@ public class ApiClient {
 		String url = "/Case/{id}/Payment".replace("{id}", caseId);
 		GenericType<Collection<Payment>> type = new GenericType<Collection<Payment>>(){};
 		Collection<Payment> response = (Collection<Payment>)PerformHttpCall(url, HttpMethod.GET, type.getRawClass(), null, true);
-		return response;
-	}
-	
-	/**
-	 * Post your SocialAccount to an existing Customer on an existing Case
-	 * @param caseId The Case Id of a Case with the Customer  which you have already posted
-	 * @param socialAccount Your SocialAccount which you want to post
-	 * @return The SocialAccount object that was just posted
-	 * @throws TrustevApiException A Custom Trustev Api Exception
-	 */
-	public static SocialAccount postSocialAccount(String caseId, SocialAccount socialAccount) throws TrustevApiException
-	{
-		String url = "/Case/{id}/Customer/SocialAccount".replace("{id}", caseId);
-		SocialAccount response = (SocialAccount)PerformHttpCall(url, HttpMethod.POST, SocialAccount.class, socialAccount, true);
-		return response;
-	}
-	
-	/**
-	 * Update a specific SocialAccount on a Case which already contains a SocialAccount
-	 * @param caseId The Case Id of a Case which you have already posted
-	 * @param socialAccount The SocialAccount you want to update the existing SocialAccount to
-	 * @param socialAccountId The id of the SocialAccount you want to update
-	 * @return The updated SocialAccount object
-	 * @throws TrustevApiException A Custom Trustev Api Exception
-	 */
-	public static SocialAccount updateSocialAccount(String caseId, SocialAccount socialAccount, String socialAccountId) throws TrustevApiException
-	{
-		String url = "/Case/{id}/Customer/SocialAccount/{id2}".replace("{id}", caseId).replace("{id2}", socialAccountId);
-		SocialAccount response = (SocialAccount)PerformHttpCall(url, HttpMethod.PUT, SocialAccount.class, socialAccount, true);
-		return response;
-	}
-	
-	/**
-	 * Get a specific SocialAccount from a Case
-	 * @param caseId The Case Id of a Case with the Customer which you have already posted
-	 * @param socialAccountId The Id of the SocialAccount you want to get
-	 * @return The SocialAccount object that matches socialAccountId
-	 * @throws TrustevApiException A Custom Trustev Api Exception
-	 */
-	public static SocialAccount getSocialAccount(String caseId, String socialAccountId) throws TrustevApiException
-	{
-		String url = "/Case/{id}/Customer/SocialAccount/{id2}".replace("{id}", caseId).replace("{id2}", socialAccountId);
-		SocialAccount response = (SocialAccount)PerformHttpCall(url, HttpMethod.GET, SocialAccount.class, null, true);
-		return response;
-	}
-	
-	/**
-	 * Get all the SocialAccounts from a Customer on a Case
-	 * @param caseId The Case Id of a Case with the Customer  which you have already posted
-	 * @return A Collection of SocialAccount objects that match caseId
-	 * @throws TrustevApiException A Custom Trustev Api Exception
-	 */
-	public static Collection<SocialAccount> getSocialAccounts(String caseId) throws TrustevApiException
-	{
-		String url = "/Case/{id}/Customer/SocialAccount".replace("{id}", caseId);
-		GenericType<Collection<SocialAccount>> type = new GenericType<Collection<SocialAccount>>(){};
-		Collection<SocialAccount> response = (Collection<SocialAccount>)PerformHttpCall(url, HttpMethod.GET, type.getRawClass(), null, true);
 		return response;
 	}
 	
