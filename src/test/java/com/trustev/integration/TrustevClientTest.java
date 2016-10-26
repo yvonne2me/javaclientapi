@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.Properties;
 import java.util.UUID;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -37,11 +38,12 @@ public class TrustevClientTest {
 	// you can set these up on the config.properties file or run them as 
 	// command line parameters when using maven. 
 	// Example : mvn clean test -DuserName=test-user -Dpassword=testpasswd -Dsecret=testSecret -Durl=US
- 
+
 	public static String userName;
 	public static String password;
 	public static String secret;
 	public static BaseUrl baseUrl;
+	public static String alternateUrl;
 
 	@BeforeClass
 	public static void SetUpClass() throws Exception{
@@ -50,15 +52,21 @@ public class TrustevClientTest {
 		userName = System.getProperty("userName");
 		password = System.getProperty("password");
 		secret = System.getProperty("secret");
-		String baseUrlString = System.getProperty("url");
-		
-		if(baseUrlString != null)
+		alternateUrl = System.getProperty("altUrl");
+
+		String baseUrlString;
+		if(alternateUrl == null)
 		{
-			baseUrl = BaseUrl.valueOf(baseUrlString);
+			baseUrlString = System.getProperty("url");
+
+			if(baseUrlString != null)
+			{
+				baseUrl = BaseUrl.valueOf(baseUrlString);
+			}
 		}
-		
+
 		// no command line parameters were provided so we'll try to read them from the properties file
-		if(userName == null && password == null && secret == null && baseUrl == null)
+		if(userName == null && password == null && secret == null && baseUrl == null && alternateUrl == null)
 		{
 			InputStream inputStream = null;
 			try {
@@ -67,7 +75,6 @@ public class TrustevClientTest {
 
 				ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 				inputStream = classloader.getResourceAsStream(propFileName);
-				//inputStream = TrustevClientTest.class.getResourceAsStream(propFileName);
 
 				if (inputStream != null) {
 					prop.load(inputStream);
@@ -80,7 +87,7 @@ public class TrustevClientTest {
 				password = prop.getProperty("password");
 				secret = prop.getProperty("secret");
 				baseUrlString = prop.getProperty("url");
-				
+
 				if(baseUrlString != null && !baseUrlString.equals(""))
 				{
 					baseUrl = BaseUrl.valueOf(baseUrlString);
@@ -96,18 +103,28 @@ public class TrustevClientTest {
 				}
 			}
 		}
-		
-		if(userName == null || password == null || secret == null || baseUrl == null)
+
+		if(userName == null || password == null || secret == null || (baseUrl == null && alternateUrl == null))
 		{
 			throw new Exception("Inexisting or invalid credentials provided.");
 		}
 	}
 
+	@Before
+	public void testSetup()
+	{
+		if(alternateUrl != null && alternateUrl != "")
+		{
+			ApiClient.SetUp(userName, password, secret, alternateUrl);
+		}
+		else if(baseUrl != null)
+		{
+			ApiClient.SetUp(userName, password, secret, baseUrl);
+		}
+	}
+	
 	@Test
 	public void testAddCase() throws TrustevApiException {
-
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
 
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Customer customer = new Customer();
@@ -130,9 +147,6 @@ public class TrustevClientTest {
 	@Test
 	public void testUpdateCase() throws TrustevApiException {
 
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
-
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Customer customer = new Customer();
 		customer.setFirstName("John");
@@ -154,9 +168,6 @@ public class TrustevClientTest {
 
 	@Test
 	public void testGetCase() throws TrustevApiException {
-
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
 
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Customer customer = new Customer();
@@ -181,8 +192,6 @@ public class TrustevClientTest {
 		int responseCode = 200;
 		try
 		{
-			//Initialize Client
-			ApiClient.SetUp(userName, password, secret, baseUrl);
 			ApiClient.getCase(UUID.randomUUID().toString() + "|" + UUID.randomUUID().toString());
 		}
 		catch(TrustevApiException ex)
@@ -199,9 +208,6 @@ public class TrustevClientTest {
 		int responseCode = 200;
 		try
 		{
-			//Initialize Client
-			ApiClient.SetUp(userName, password, secret, baseUrl);
-
 			Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 			Customer customer = new Customer();
 			customer.setFirstName("John");
@@ -221,9 +227,6 @@ public class TrustevClientTest {
 	@Test
 	public void testDefaultCaseTypePost() throws TrustevApiException {
 
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
-
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Customer customer = new Customer();
 		customer.setFirstName("John");
@@ -239,9 +242,6 @@ public class TrustevClientTest {
 
 	@Test
 	public void testAccountCreationCaseTypePost() throws TrustevApiException {
-
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
 
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Customer customer = new Customer();
@@ -259,9 +259,6 @@ public class TrustevClientTest {
 
 	@Test
 	public void testApplicationCaseTypePost() throws TrustevApiException {
-
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
 
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Customer customer = new Customer();
@@ -283,9 +280,7 @@ public class TrustevClientTest {
 
 	@Test
 	public void testGetDecision() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
-
+		
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Customer customer = new Customer();
 		customer.setFirstName("John");
@@ -303,9 +298,7 @@ public class TrustevClientTest {
 
 	@Test
 	public void testGetDecisionPass() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
-
+		
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString() + "pass");
 		Customer customer = new Customer();
 		customer.setFirstName("John");
@@ -325,8 +318,6 @@ public class TrustevClientTest {
 
 	@Test
 	public void testGetDecisionFlag() throws TrustevApiException {
-		// Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
 
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString() + "flag");
 		Customer customer = new Customer();
@@ -345,9 +336,7 @@ public class TrustevClientTest {
 
 	@Test
 	public void testGetDecisionFail() throws TrustevApiException {
-		// Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
-
+		
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString() + "fail");
 		Customer customer = new Customer();
 		customer.setFirstName("JohnFail");
@@ -369,8 +358,6 @@ public class TrustevClientTest {
 		int responseCode = 200;
 		try
 		{
-			//Initialize Client
-			ApiClient.SetUp(userName, password, secret, baseUrl);
 			ApiClient.getDecision(UUID.randomUUID().toString() + "|" + UUID.randomUUID().toString());
 		}
 		catch(TrustevApiException ex)
@@ -386,9 +373,6 @@ public class TrustevClientTest {
 	/*****************************Detailed Decision Tests***************************/
 	@Test
 	public void testGetDetailedDecision() throws TrustevApiException {
-
-		// Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
 
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Customer customer = new Customer();
@@ -411,8 +395,6 @@ public class TrustevClientTest {
 		int responseCode = 200;
 		try
 		{
-			//Initialize Client
-			ApiClient.SetUp(userName, password, secret, baseUrl);
 			ApiClient.getDetailedDecision(UUID.randomUUID().toString() + "|" + UUID.randomUUID().toString());
 		}
 		catch(TrustevApiException ex)
@@ -429,11 +411,8 @@ public class TrustevClientTest {
 	/*****************************Customer Object Tests**********************************/
 	@Test
 	public void testPostCustomer() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
-
+		
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
-
 		Case responseCase = ApiClient.postCase(kase);
 
 		Customer customer = new Customer();
@@ -450,9 +429,7 @@ public class TrustevClientTest {
 
 	@Test
 	public void testUpdateCustomer() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
-
+		
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Customer customer = new Customer();
 		customer.setFirstName("John");
@@ -472,9 +449,7 @@ public class TrustevClientTest {
 
 	@Test
 	public void testGetCustomer() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
-
+		
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Customer customer = new Customer();
 		customer.setFirstName("John");
@@ -496,9 +471,6 @@ public class TrustevClientTest {
 		int responseCode = 200;
 		try
 		{
-			//Initialize Client
-			ApiClient.SetUp(userName, password, secret, baseUrl);
-
 			Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 			Case responseCase = ApiClient.postCase(kase);
 
@@ -516,9 +488,7 @@ public class TrustevClientTest {
 	/*****************************Transaction Object Tests********************************/
 	@Test
 	public void testPostTransaction() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
-
+		
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Case responseCase = ApiClient.postCase(kase);
 
@@ -532,9 +502,7 @@ public class TrustevClientTest {
 
 	@Test
 	public void testUpdateTransaction() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
-
+		
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Transaction transaction = new Transaction();
 		transaction.setTotalTransactionValue(10.99);
@@ -550,9 +518,7 @@ public class TrustevClientTest {
 
 	@Test
 	public void testGetTransaction() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
-
+		
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Transaction transaction = new Transaction();
 		transaction.setTotalTransactionValue(10.99);
@@ -571,9 +537,6 @@ public class TrustevClientTest {
 		int responseCode = 200;
 		try
 		{
-			//Initialize Client
-			ApiClient.SetUp(userName, password, secret, baseUrl);
-
 			Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 			Case responseCase = ApiClient.postCase(kase);
 
@@ -591,9 +554,7 @@ public class TrustevClientTest {
 	/*****************************Status Object Tests*************************************/
 	@Test
 	public void testPostCaseStatus() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
-
+		
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Case responseCase = ApiClient.postCase(kase);
 
@@ -609,8 +570,7 @@ public class TrustevClientTest {
 
 	@Test
 	public void testGetCaseStatus() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
+		
 
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Case responseCase = ApiClient.postCase(kase);
@@ -624,8 +584,7 @@ public class TrustevClientTest {
 
 	@Test
 	public void testGetCaseStatuses() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
+		
 
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Case responseCase = ApiClient.postCase(kase);
@@ -647,8 +606,6 @@ public class TrustevClientTest {
 		int responseCode = 200;
 		try
 		{
-			//Initialize Client
-			ApiClient.SetUp(userName, password, secret, baseUrl);
 			ApiClient.getCaseStatuses(UUID.randomUUID() + "|" + UUID.randomUUID());
 		}
 		catch(TrustevApiException ex)
@@ -663,9 +620,7 @@ public class TrustevClientTest {
 	/*****************************Customer Address Object Tests***************************/
 	@Test
 	public void testPostCustomerAddress() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
-
+		
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Customer customer = new Customer();
 		customer.setFirstName("John");
@@ -683,9 +638,7 @@ public class TrustevClientTest {
 
 	@Test
 	public void testUpdateCustomerAddress() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
-
+		
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Customer customer = new Customer();
 		customer.setFirstName("John");
@@ -715,9 +668,7 @@ public class TrustevClientTest {
 
 	@Test
 	public void testGetCustomerAddress() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
-
+		
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Customer customer = new Customer();
 		customer.setFirstName("John");
@@ -739,9 +690,7 @@ public class TrustevClientTest {
 
 	@Test
 	public void testGetCustomerAddresses() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
-
+		
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Customer customer = new Customer();
 		customer.setFirstName("John");
@@ -768,9 +717,6 @@ public class TrustevClientTest {
 		int responseCode = 200;
 		try
 		{
-			//Initialize Client
-			ApiClient.SetUp(userName, password, secret, baseUrl);
-
 			Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 			Case returningCase = ApiClient.postCase(kase);
 
@@ -788,9 +734,7 @@ public class TrustevClientTest {
 	/*****************************Customer EmailAddress Object Tests**************************/
 	@Test
 	public void testPostEmail() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
-
+		
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Customer customer = new Customer();
 		customer.setFirstName("John");
@@ -808,9 +752,7 @@ public class TrustevClientTest {
 
 	@Test
 	public void testUpdateEmail() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
-
+		
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Customer customer = new Customer();
 		customer.setFirstName("John");
@@ -834,8 +776,6 @@ public class TrustevClientTest {
 
 	@Test
 	public void testGetEmail() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
 
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Customer customer = new Customer();
@@ -858,9 +798,7 @@ public class TrustevClientTest {
 
 	@Test
 	public void testGetEmails() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
-
+		
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Customer customer = new Customer();
 		customer.setFirstName("John");
@@ -889,9 +827,6 @@ public class TrustevClientTest {
 		int responseCode = 200;
 		try
 		{
-			//Initialize Client
-			ApiClient.SetUp(userName, password, secret, baseUrl);
-
 			Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 			Case returningCase = ApiClient.postCase(kase);
 
@@ -909,9 +844,7 @@ public class TrustevClientTest {
 	/*****************************Payment Object Tests*****************************************/
 	@Test
 	public void testPostPayment() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
-
+		
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Case responseCase = ApiClient.postCase(kase);
 
@@ -924,8 +857,6 @@ public class TrustevClientTest {
 
 	@Test
 	public void testUpdatePayment() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
 
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Collection<Payment> payments = new LinkedList<Payment>();
@@ -944,9 +875,7 @@ public class TrustevClientTest {
 
 	@Test
 	public void testGetPayment() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
-
+		
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Collection<Payment> payments = new LinkedList<Payment>();
 		Payment payment = new Payment();
@@ -962,9 +891,7 @@ public class TrustevClientTest {
 
 	@Test
 	public void testGetPayments() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
-
+		
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Collection<Payment> payments = new LinkedList<Payment>();
 		Payment payment = new Payment();
@@ -986,9 +913,6 @@ public class TrustevClientTest {
 		int responseCode = 200;
 		try
 		{
-			//Initialize Client
-			ApiClient.SetUp(userName, password, secret, baseUrl);
-
 			Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 			Case returningCase = ApiClient.postCase(kase);
 
@@ -1006,7 +930,6 @@ public class TrustevClientTest {
 	/*****************************TransactionAddress Object Tests*****************************/
 	@Test
 	public void testPostTransactionAddress() throws TrustevApiException {
-		ApiClient.SetUp(userName, password, secret, baseUrl);
 
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Collection<Address> addresses = new LinkedList<Address>();
@@ -1026,9 +949,7 @@ public class TrustevClientTest {
 
 	@Test
 	public void testUpdateTransactionAddress() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
-
+		
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Collection<Address> addresses = new LinkedList<Address>();
 		Transaction transaction = new Transaction();
@@ -1048,9 +969,7 @@ public class TrustevClientTest {
 
 	@Test
 	public void testGetTransactionAddress() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
-
+		
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Collection<Address> addresses = new LinkedList<Address>();
 		Transaction transaction = new Transaction();
@@ -1068,9 +987,7 @@ public class TrustevClientTest {
 
 	@Test
 	public void testGetTransactionAddresseses() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
-
+	
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Collection<Address> addresses = new LinkedList<Address>();
 		Transaction transaction = new Transaction();
@@ -1091,9 +1008,6 @@ public class TrustevClientTest {
 		int responseCode = 200;
 		try
 		{
-			//Initialize Client
-			ApiClient.SetUp(userName, password, secret, baseUrl);
-
 			Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 			Case returningCase = ApiClient.postCase(kase);
 
@@ -1112,7 +1026,6 @@ public class TrustevClientTest {
 
 	@Test
 	public void testPostTransactionItem() throws TrustevApiException {
-		ApiClient.SetUp(userName, password, secret, baseUrl);
 
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Collection<TransactionItem> transactionItems = new LinkedList<TransactionItem>();
@@ -1131,9 +1044,7 @@ public class TrustevClientTest {
 
 	@Test
 	public void testUpdateTransactionItem() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
-
+		
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Collection<TransactionItem> transactionItems = new LinkedList<TransactionItem>();
 		Transaction transaction = new Transaction();
@@ -1152,9 +1063,7 @@ public class TrustevClientTest {
 
 	@Test
 	public void testGetTransactionItem() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
-
+		
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Collection<TransactionItem> transactionItems = new LinkedList<TransactionItem>();
 		Transaction transaction = new Transaction();
@@ -1172,9 +1081,7 @@ public class TrustevClientTest {
 
 	@Test
 	public void testGetTransactionItems() throws TrustevApiException {
-		//Initialize Client
-		ApiClient.SetUp(userName, password, secret, baseUrl);
-
+		
 		Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 		Collection<TransactionItem> transactionItems = new LinkedList<TransactionItem>();
 		Transaction transaction = new Transaction();
@@ -1200,9 +1107,6 @@ public class TrustevClientTest {
 		int responseCode = 200;
 		try
 		{
-			//Initialize Client
-			ApiClient.SetUp(userName, password, secret, baseUrl);
-
 			Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 			Case returningCase = ApiClient.postCase(kase);
 

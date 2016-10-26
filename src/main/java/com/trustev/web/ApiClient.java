@@ -79,6 +79,22 @@ public class ApiClient {
 	}
 	
 	/**
+	 * Initialize the Trustev class by passing in your UserName, Secret and Password.
+	 * If you do not have this information, please contact our Integration Team - integrate@trustev.com
+	 * @param userName Your Trustev Username
+	 * @param password Your Trustev Password
+	 * @param secret Your Trustev Secret
+	 * @param baseUrl A url string specifying base url for the api calls
+	 */
+	public static void SetUp(String userName, String password, String secret, String baseUrl)
+	{
+		ApiClient.userName = userName;
+		ApiClient.password = password;
+		ApiClient.secret = secret;
+		ApiClient.baseUrl = baseUrl;
+	}
+	
+	/**
 	 * Post your Case to the TrustevClient Api
 	 * @param kase Your Case which you want to POST
 	 * @return The Case, along with the Case Id that the TrustevClient API have assigned it.
