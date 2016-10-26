@@ -1,23 +1,107 @@
 package com.trustev.integration;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Properties;
 import java.util.UUID;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.trustev.domain.entities.*;
+import com.trustev.domain.entities.Address;
+import com.trustev.domain.entities.BaseUrl;
+import com.trustev.domain.entities.Case;
+import com.trustev.domain.entities.CaseStatus;
+import com.trustev.domain.entities.CaseStatusType;
+import com.trustev.domain.entities.CaseType;
+import com.trustev.domain.entities.Customer;
+import com.trustev.domain.entities.Decision;
+import com.trustev.domain.entities.DecisionResult;
+import com.trustev.domain.entities.DetailedDecision;
+import com.trustev.domain.entities.Email;
+import com.trustev.domain.entities.Payment;
+import com.trustev.domain.entities.Transaction;
+import com.trustev.domain.entities.TransactionItem;
 import com.trustev.domain.exceptions.TrustevApiException;
 import com.trustev.web.ApiClient;
-import junit.framework.TestCase;
 
-public class TrustevClientTest extends TestCase {
+public class TrustevClientTest {
 
 	// Set your test credentials and baseURL to run the integration tests
-	public String userName = "";
-	public String password = "";
-	public String secret = "";
-	public BaseUrl baseUrl = null;
+	// you can set these up on the config.properties file or run them as 
+	// command line parameters when using maven. 
+	// Example : mvn clean test -DuserName=test-user -Dpassword=testpasswd -Dsecret=testSecret -Durl=US
+ 
+	public static String userName;
+	public static String password;
+	public static String secret;
+	public static BaseUrl baseUrl;
+
+	@BeforeClass
+	public static void SetUpClass() throws Exception{
+
+		// try to load parameters from the command line
+		userName = System.getProperty("userName");
+		password = System.getProperty("password");
+		secret = System.getProperty("secret");
+		String baseUrlString = System.getProperty("url");
+		
+		if(baseUrlString != null)
+		{
+			baseUrl = BaseUrl.valueOf(baseUrlString);
+		}
+		
+		// no command line parameters were provided so we'll try to read them from the properties file
+		if(userName == null && password == null && secret == null && baseUrl == null)
+		{
+			InputStream inputStream = null;
+			try {
+				Properties prop = new Properties();
+				String propFileName = "config.properties";
+
+				ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+				inputStream = classloader.getResourceAsStream(propFileName);
+				//inputStream = TrustevClientTest.class.getResourceAsStream(propFileName);
+
+				if (inputStream != null) {
+					prop.load(inputStream);
+				} else {
+					throw new FileNotFoundException("property file '" + propFileName + "' not found in the classpath");
+				}
+
+				// get the property values
+				userName = prop.getProperty("userName");
+				password = prop.getProperty("password");
+				secret = prop.getProperty("secret");
+				baseUrlString = prop.getProperty("url");
+				
+				if(baseUrlString != null && !baseUrlString.equals(""))
+				{
+					baseUrl = BaseUrl.valueOf(baseUrlString);
+				}
+
+			} catch (Exception e) {
+				System.out.println("Exception: " + e);
+				throw e;
+			} finally {
+				if(inputStream != null)
+				{
+					inputStream.close();
+				}
+			}
+		}
+		
+		if(userName == null || password == null || secret == null || baseUrl == null)
+		{
+			throw new Exception("Inexisting or invalid credentials provided.");
+		}
+	}
 
 	@Test
 	public void testAddCase() throws TrustevApiException {
@@ -320,7 +404,7 @@ public class TrustevClientTest extends TestCase {
 		assertNotNull(decision.getResult());
 	}
 
-	
+
 	@Test
 	public void testGetInexistentDetailedDecision() throws TrustevApiException {
 
@@ -341,7 +425,7 @@ public class TrustevClientTest extends TestCase {
 
 	/***************************End Detailed Decision Tests******************************/
 
-	
+
 	/*****************************Customer Object Tests**********************************/
 	@Test
 	public void testPostCustomer() throws TrustevApiException {
@@ -406,7 +490,7 @@ public class TrustevClientTest extends TestCase {
 		assertEquals("Doe", responseCustomer.getLastName());
 	}
 
-	
+
 	@Test
 	public void testGetInexistentCustomer() throws TrustevApiException {	
 		int responseCode = 200;
@@ -426,9 +510,9 @@ public class TrustevClientTest extends TestCase {
 		}
 		assertEquals(404, responseCode);
 	}
-	
+
 	/*****************************End of Customer Object Tests****************************/
-	
+
 	/*****************************Transaction Object Tests********************************/
 	@Test
 	public void testPostTransaction() throws TrustevApiException {
@@ -443,7 +527,7 @@ public class TrustevClientTest extends TestCase {
 		Transaction responseTransaction = ApiClient.postTransaction(responseCase.getId(), transaction);
 
 		assertNotNull(responseTransaction.getId());
-		assertEquals(10.99, responseTransaction.getTotalTransactionValue());
+		assertEquals(10.99, responseTransaction.getTotalTransactionValue(), 0);
 	}
 
 	@Test
@@ -461,7 +545,7 @@ public class TrustevClientTest extends TestCase {
 		Transaction responseTransaction = ApiClient.updateTransaction(responseCase.getId(), transaction);
 
 		assertNotNull(responseTransaction.getId());
-		assertEquals(20.99, responseTransaction.getTotalTransactionValue());
+		assertEquals(20.99, responseTransaction.getTotalTransactionValue(), 0);
 	}
 
 	@Test
@@ -478,10 +562,10 @@ public class TrustevClientTest extends TestCase {
 		Transaction responseTransaction = ApiClient.getTransaction(responseCase.getId());
 
 		assertNotNull(responseTransaction.getId());
-		assertEquals(10.99, responseTransaction.getTotalTransactionValue());
+		assertEquals(10.99, responseTransaction.getTotalTransactionValue(), 0);
 	}
 
-	
+
 	@Test
 	public void testGetInexistentTransaction() throws TrustevApiException {	
 		int responseCode = 200;
@@ -501,9 +585,9 @@ public class TrustevClientTest extends TestCase {
 		}
 		assertEquals(404, responseCode);
 	}
-	
+
 	/*****************************End of Transaction Object Tests*************************/
-	
+
 	/*****************************Status Object Tests*************************************/
 	@Test
 	public void testPostCaseStatus() throws TrustevApiException {
@@ -557,7 +641,7 @@ public class TrustevClientTest extends TestCase {
 
 		assertTrue(returnStatuses.size() > 1);
 	}
-	
+
 	@Test
 	public void testGetInexistingCaseStatuses() throws TrustevApiException {
 		int responseCode = 200;
@@ -573,9 +657,9 @@ public class TrustevClientTest extends TestCase {
 		}
 		assertEquals(404, responseCode);
 	}
-	
+
 	/*****************************End of Transaction Object Tests*************************/
-	
+
 	/*****************************Customer Address Object Tests***************************/
 	@Test
 	public void testPostCustomerAddress() throws TrustevApiException {
@@ -614,7 +698,7 @@ public class TrustevClientTest extends TestCase {
 		customer.setAddresses(addresses);
 
 		Case responseCase = ApiClient.postCase(kase);
-		
+
 		Address newAddress = new Address();
 		newAddress.setCity("Dublin");
 		Collection<Address> newAddresses = new LinkedList<Address>();
@@ -622,7 +706,7 @@ public class TrustevClientTest extends TestCase {
 		customer.setAddresses(newAddresses);
 
 		Address returnAddress = ApiClient.updateCustomerAddress(responseCase.getId(), newAddress, responseCase.getCustomer().getAddresses().iterator().next().getId());
-		
+
 		Address getAddress = ApiClient.getCustomerAddress(responseCase.getId(), returnAddress.getId());
 
 		assertNotNull(getAddress.getId());
@@ -678,7 +762,7 @@ public class TrustevClientTest extends TestCase {
 
 		assertTrue(returnAddresses.size() > 1);
 	}
-	
+
 	@Test
 	public void testGetInexistingCustomerAddresses() throws TrustevApiException {
 		int responseCode = 200;
@@ -686,10 +770,10 @@ public class TrustevClientTest extends TestCase {
 		{
 			//Initialize Client
 			ApiClient.SetUp(userName, password, secret, baseUrl);
-			
+
 			Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 			Case returningCase = ApiClient.postCase(kase);
-			
+
 			ApiClient.getCustomerAddresses(returningCase.getId());
 		}
 		catch(TrustevApiException ex)
@@ -700,7 +784,7 @@ public class TrustevClientTest extends TestCase {
 	}
 
 	/*****************************End of CustomerAddress Object Tests*************************/
-	
+
 	/*****************************Customer EmailAddress Object Tests**************************/
 	@Test
 	public void testPostEmail() throws TrustevApiException {
@@ -798,8 +882,8 @@ public class TrustevClientTest extends TestCase {
 
 		assertTrue(returnEmails.size() > 1);
 	}
-	
-	
+
+
 	@Test
 	public void testGetInexistingEmailAddresses() throws TrustevApiException {
 		int responseCode = 200;
@@ -807,10 +891,10 @@ public class TrustevClientTest extends TestCase {
 		{
 			//Initialize Client
 			ApiClient.SetUp(userName, password, secret, baseUrl);
-			
+
 			Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 			Case returningCase = ApiClient.postCase(kase);
-			
+
 			ApiClient.getEmails(returningCase.getId());
 		}
 		catch(TrustevApiException ex)
@@ -819,7 +903,7 @@ public class TrustevClientTest extends TestCase {
 		}
 		assertEquals(400, responseCode);
 	}
-	
+
 	/*****************************End of Customer EmailAddress Object Tests********************/
 
 	/*****************************Payment Object Tests*****************************************/
@@ -904,10 +988,10 @@ public class TrustevClientTest extends TestCase {
 		{
 			//Initialize Client
 			ApiClient.SetUp(userName, password, secret, baseUrl);
-			
+
 			Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 			Case returningCase = ApiClient.postCase(kase);
-			
+
 			ApiClient.getPayments(returningCase.getId());
 		}
 		catch(TrustevApiException ex)
@@ -916,7 +1000,7 @@ public class TrustevClientTest extends TestCase {
 		}
 		assertEquals(400, responseCode);
 	}
-	
+
 	/*****************************End of Payment Object Tests*********************************/
 
 	/*****************************TransactionAddress Object Tests*****************************/
@@ -1001,7 +1085,7 @@ public class TrustevClientTest extends TestCase {
 
 		assertTrue(returnAddresses.size() == 1);
 	}
-	
+
 	@Test
 	public void testGetInexistingTransactionAddresses() throws TrustevApiException {
 		int responseCode = 200;
@@ -1009,10 +1093,10 @@ public class TrustevClientTest extends TestCase {
 		{
 			//Initialize Client
 			ApiClient.SetUp(userName, password, secret, baseUrl);
-			
+
 			Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 			Case returningCase = ApiClient.postCase(kase);
-			
+
 			ApiClient.getTransactionAddresses(returningCase.getId());
 		}
 		catch(TrustevApiException ex)
@@ -1021,9 +1105,9 @@ public class TrustevClientTest extends TestCase {
 		}
 		assertEquals(400, responseCode);
 	}
-	
+
 	/*****************************End of TransactionAddress Object Tests**************************/
-	
+
 	/*****************************TransactionItem Object Tests************************************/
 
 	@Test
@@ -1097,11 +1181,11 @@ public class TrustevClientTest extends TestCase {
 		TransactionItem transactionItem = new TransactionItem();
 		transactionItem.setItemValue(10.99);
 		transactionItems.add(transactionItem);
-		
+
 		TransactionItem transactionItem2 = new TransactionItem();
 		transactionItem.setItemValue(20.99);
 		transactionItems.add(transactionItem2);
-		
+
 		transaction.setItems(transactionItems);
 		kase.setTransaction(transaction);
 		Case responseCase = ApiClient.postCase(kase);
@@ -1110,7 +1194,7 @@ public class TrustevClientTest extends TestCase {
 
 		assertTrue(returnTransactionItems.size() == 2);
 	}
-	
+
 	@Test
 	public void testGetInexistingTransactionItems() throws TrustevApiException {
 		int responseCode = 200;
@@ -1118,10 +1202,10 @@ public class TrustevClientTest extends TestCase {
 		{
 			//Initialize Client
 			ApiClient.SetUp(userName, password, secret, baseUrl);
-			
+
 			Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
 			Case returningCase = ApiClient.postCase(kase);
-			
+
 			ApiClient.getTransactionItems(returningCase.getId());
 		}
 		catch(TrustevApiException ex)
