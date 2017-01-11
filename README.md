@@ -15,7 +15,7 @@
   <dependency>
 	<groupId>com.trustev</groupId>
   	<artifactId>trustev-java</artifactId>
-  	<version>2.0.6</version>
+  	<version>2.0.7</version>
   </dependency>
 ```
 

@@ -54,6 +54,9 @@ public class RawData{
 
 	@JsonProperty("Transaction")
 	private RawDataTransaction transaction;
+	
+	@JsonProperty("Location")
+	private RawDataLocation location;
 
 	public CaseType getCaseType() {
 		return caseType;
@@ -173,5 +176,13 @@ public class RawData{
 
 	public void setTransaction(RawDataTransaction transaction) {
 		this.transaction = transaction;
+	}
+
+	public RawDataLocation getLocation() {
+		return location;
+	}
+
+	public void setLocation(RawDataLocation location) {
+		this.location = location;
 	}
 }

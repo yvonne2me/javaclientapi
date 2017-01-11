@@ -153,7 +153,22 @@ public class Case extends BaseObject{
 		this.caseType = caseType;
 	}
 	
+	/**
+	 * @return the Location ConsentId used for the location services
+	 */
+	@JsonProperty("LocationConsentId")
+	public String getLocationConsentId() {
+		return locationConsentId;
+	}
 	
+	/**
+	 * @param locationConsentId to set in the case
+	 */
+	@JsonProperty("LocationConsentId")
+	public void setLocationConsentId(String locationConsentId) {
+		this.locationConsentId = locationConsentId;
+	}
+
 	private UUID sessionId;
 	
 	private String caseNumber;
@@ -169,4 +184,6 @@ public class Case extends BaseObject{
 	private Date timestamp;
 	
 	private CaseType caseType;
+	
+	private String locationConsentId;
 }
