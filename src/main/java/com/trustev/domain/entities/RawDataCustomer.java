@@ -2,8 +2,10 @@ package com.trustev.domain.entities;
 
 import java.util.Collection;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RawDataCustomer
 {
 	@JsonProperty("FirstName")

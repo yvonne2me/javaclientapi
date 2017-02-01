@@ -1,16 +1,17 @@
 package com.trustev.domain.entities;
 
-import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * Transaction Object - includes details such as Transaction Amount, Currency, Items and Transaction delivery/billing address.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class Transaction extends BaseObject {
 	

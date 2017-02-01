@@ -3,6 +3,7 @@ package com.trustev.domain.entities;
 import java.util.Date;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -10,6 +11,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  * Represents an Address for either a Customer or Transaction
  */
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Address extends BaseObject {
 	
 		

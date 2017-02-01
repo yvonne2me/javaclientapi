@@ -2,6 +2,7 @@ package com.trustev.domain.entities;
 
 import java.util.Date;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -9,6 +10,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  * The CaseStatus is used to let Trustev know the current status of any Case. When the status of a Case changes, please update the status of the Case.
  */
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CaseStatus extends BaseObject {
 	
 	private CaseStatusType status;

@@ -1,11 +1,13 @@
 package com.trustev.domain.entities;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * Items Object – contains details on Item Name, Quantity and Item Value. Please see Items Object for further parameter information.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class TransactionItem extends BaseObject {
 	private String name;

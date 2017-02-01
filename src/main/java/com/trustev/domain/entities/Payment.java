@@ -1,6 +1,6 @@
 package com.trustev.domain.entities;
 
-//import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -8,6 +8,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  * Payments includes forwarding the Payment Type (Credit/Debit Card, PayPal…), and the BIN/IIN Number of the relevant card should it be available.
  */
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Payment extends BaseObject {
 	private PaymentType paymentType;
 	private String binNumber;

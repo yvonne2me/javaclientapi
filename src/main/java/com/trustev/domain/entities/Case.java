@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -16,6 +17,7 @@ import com.trustev.domain.exceptions.TrustevApiException;
  * The more information that you provide us with, the more accurate our Decision, so please populate as much as possible.
  */
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Case extends BaseObject{
 	
 	

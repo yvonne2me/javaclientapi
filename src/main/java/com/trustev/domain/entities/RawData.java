@@ -1,6 +1,7 @@
 package com.trustev.domain.entities;
 import java.util.Collection;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -8,6 +9,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  * The Detailed decision Raw data object
  */
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RawData{
 
 	@JsonProperty("CaseType")
