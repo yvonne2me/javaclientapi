@@ -2,7 +2,6 @@ package com.trustev.integration;
 
 import com.trustev.domain.entities.*;
 import com.trustev.domain.exceptions.TrustevApiException;
-import com.trustev.domain.exceptions.TrustevInvalidBaseUrlException;
 import com.trustev.web.ApiClient;
 import org.junit.Before;
 import org.junit.BeforeClass;
