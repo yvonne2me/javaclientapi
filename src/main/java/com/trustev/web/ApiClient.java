@@ -102,6 +102,10 @@ public class ApiClient {
         }
     }
 
+    public static void removeAllMerchantSites(){
+        merchantSites.clear();
+    }
+
     /**
      * Removes a merchant site from the ApiClient's regiserted merchant sites
      *

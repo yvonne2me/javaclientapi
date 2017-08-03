@@ -107,6 +107,10 @@ public class TrustevClientTest {
 
     @Before
     public void testSetup() {
+        if (ApiClient.hasMultipleMerchantSites()){
+            ApiClient.removeAllMerchantSites();
+        }
+
         if (alternateUrl != null && alternateUrl != "") {
             ApiClient.SetUp(userName, password, secret, alternateUrl);
         } else if (baseUrl != null) {
