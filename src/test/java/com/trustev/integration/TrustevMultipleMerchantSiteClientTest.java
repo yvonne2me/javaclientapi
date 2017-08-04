@@ -3,6 +3,7 @@ package com.trustev.integration;
 import com.trustev.domain.entities.*;
 import com.trustev.domain.exceptions.TrustevApiException;
 import com.trustev.web.ApiClient;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -98,7 +99,7 @@ public class TrustevMultipleMerchantSiteClientTest {
                 baseUrlString2 = prop.getProperty("url2");
 
                 if ((baseUrlString != null && !baseUrlString.equals("") && (baseUrlString.equals("US") || baseUrlString.equals("EU"))) &&
-                    (baseUrlString2 != null && !baseUrlString2.equals("") && (baseUrlString2.equals("US") || baseUrlString2.equals("EU")))) {
+                        (baseUrlString2 != null && !baseUrlString2.equals("") && (baseUrlString2.equals("US") || baseUrlString2.equals("EU")))) {
                     baseUrl = BaseUrl.valueOf(baseUrlString);
                     baseUrl2 = BaseUrl.valueOf(baseUrlString2);
                 }
@@ -135,6 +136,11 @@ public class TrustevMultipleMerchantSiteClientTest {
             merchantSite1 = new MerchantSite(userName, password, secret, baseUrl);
             merchantSite2 = new MerchantSite(userName2, password2, secret2, baseUrl2);
         }
+    }
+
+    @After
+    public void testTeardown() {
+        ApiClient.removeAllMerchantSites();
     }
     //</editor-fold>
 
@@ -2152,22 +2158,21 @@ public class TrustevMultipleMerchantSiteClientTest {
     @Test
     public void testPostCaseStatus_AddMerchantSiteBeforePost_500() throws TrustevApiException {
         int responseCode = 200;
-        boolean removed = ApiClient.removeMerchantSite(merchantSite2.getUserName());
-        if (!ApiClient.hasMultipleMerchantSites()) {
-            Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
-            Case responseCase = ApiClient.postCase(kase);
+        ApiClient.removeMerchantSite(merchantSite2.getUserName());
 
-            ApiClient.SetUp(merchantSite2.getUserName(), merchantSite2.getPassword(), merchantSite2.getSecret(), merchantSite2.getBaseUrlString());
+        Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+        Case responseCase = ApiClient.postCase(kase);
 
-            CaseStatus caseStatus = new CaseStatus();
-            caseStatus.setComment("Testing Status!!");
-            caseStatus.setStatus(CaseStatusType.ReportedFraud);
+        ApiClient.SetUp(merchantSite2.getUserName(), merchantSite2.getPassword(), merchantSite2.getSecret(), merchantSite2.getBaseUrlString());
 
-            try {
-                CaseStatus returnStatus = ApiClient.postCaseStatus(responseCase.getId(), caseStatus);
-            } catch (TrustevApiException ex) {
-                responseCode = ex.responseCode;
-            }
+        CaseStatus caseStatus = new CaseStatus();
+        caseStatus.setComment("Testing Status!!");
+        caseStatus.setStatus(CaseStatusType.ReportedFraud);
+
+        try {
+            CaseStatus returnStatus = ApiClient.postCaseStatus(responseCase.getId(), caseStatus);
+        } catch (TrustevApiException ex) {
+            responseCode = ex.responseCode;
         }
 
         assertEquals(500, responseCode);
@@ -2180,26 +2185,23 @@ public class TrustevMultipleMerchantSiteClientTest {
     public void getDecision_secondMerchantSiteAddedMid_500() throws TrustevApiException {
         int responseCode = 200;
 
-        if (ApiClient.hasMultipleMerchantSites()) {
-            boolean removed = ApiClient.removeMerchantSite(merchantSite2.getUserName());
+        ApiClient.removeMerchantSite(merchantSite2.getUserName());
+
+        Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+        Customer customer = new Customer();
+        customer.setFirstName("John");
+        customer.setLastName("Doe");
+        kase.setCustomer(customer);
+        Case responseCase = ApiClient.postCase(kase);
+
+        ApiClient.SetUp(merchantSite2.getUserName(), merchantSite2.getPassword(), merchantSite2.getSecret(), merchantSite2.getBaseUrlString());
+
+        try {
+            Decision decision = ApiClient.getDecision(responseCase.getId());
+        } catch (TrustevApiException ex) {
+            responseCode = ex.responseCode;
         }
 
-        if (!ApiClient.hasMultipleMerchantSites()) {
-            Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
-            Customer customer = new Customer();
-            customer.setFirstName("John");
-            customer.setLastName("Doe");
-            kase.setCustomer(customer);
-            Case responseCase = ApiClient.postCase(kase);
-
-            ApiClient.SetUp(merchantSite2.getUserName(), merchantSite2.getPassword(), merchantSite2.getSecret(), merchantSite2.getBaseUrlString());
-
-            try {
-                Decision decision = ApiClient.getDecision(responseCase.getId());
-            } catch (TrustevApiException ex) {
-                responseCode = ex.responseCode;
-            }
-        }
         assertEquals(500, responseCode);
     }
 

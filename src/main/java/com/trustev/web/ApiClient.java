@@ -79,7 +79,7 @@ public class ApiClient {
      * @param userName the username for the given merchant site
      * @return true if the merchant site is already registered, false if the merchant site is not registered (or if the map of merchantSites is empty)
      */
-    public static boolean hasMerchantSite(String userName) {
+    private static boolean hasMerchantSite(String userName) {
         if (merchantSites.isEmpty() || merchantSites.size() == 0) {
             return false;
         } else if (merchantSites.containsKey(userName)) {
@@ -94,7 +94,7 @@ public class ApiClient {
      *
      * @return true if there are more than 1 Merchant Sites, false if there is only 1 or if the Map of registered sites is empty
      */
-    public static boolean hasMultipleMerchantSites() {
+    private static boolean hasMultipleMerchantSites() {
         if (merchantSites != null && merchantSites.size() > 1) {
             return true;
         } else {
@@ -102,6 +102,9 @@ public class ApiClient {
         }
     }
 
+    /**
+     * Clears the all registered Merchant Site credentials
+     */
     public static void removeAllMerchantSites() {
         merchantSites.clear();
     }

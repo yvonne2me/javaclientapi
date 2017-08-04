@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.Properties;
 import java.util.UUID;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -107,15 +108,16 @@ public class TrustevClientTest {
 
     @Before
     public void testSetup() {
-        if (ApiClient.hasMultipleMerchantSites()){
-            ApiClient.removeAllMerchantSites();
-        }
-
         if (alternateUrl != null && alternateUrl != "") {
             ApiClient.SetUp(userName, password, secret, alternateUrl);
         } else if (baseUrl != null) {
             ApiClient.SetUp(userName, password, secret, baseUrl);
         }
+    }
+
+    @After
+    public void testTeardown() {
+        ApiClient.removeAllMerchantSites();
     }
 
     @Test
