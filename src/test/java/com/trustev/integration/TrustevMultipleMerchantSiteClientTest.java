@@ -2175,7 +2175,7 @@ public class TrustevMultipleMerchantSiteClientTest {
             responseCode = ex.responseCode;
         }
 
-        assertEquals(500, responseCode);
+        assertEquals(400, responseCode);
     }
 
     /******************************Decision Tests*****************************************/
@@ -2202,7 +2202,7 @@ public class TrustevMultipleMerchantSiteClientTest {
             responseCode = ex.responseCode;
         }
 
-        assertEquals(500, responseCode);
+        assertEquals(400, responseCode);
     }
 
     /*******************************End Decision Tests******************************/
