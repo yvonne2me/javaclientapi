@@ -102,7 +102,7 @@ public class ApiClient {
         }
     }
 
-    public static void removeAllMerchantSites(){
+    public static void removeAllMerchantSites() {
         merchantSites.clear();
     }
 
@@ -1143,40 +1143,23 @@ public class ApiClient {
      */
     private static Object PerformHttpCall(String uriPath, String httpMethod, Class responseType, Object entity, Boolean isAuthenticationNeeded)
             throws TrustevApiException {
-        Object responseObject = null;
 
-        DefaultClientConfig defaultClientConfig = new DefaultClientConfig();
-        defaultClientConfig.getClasses().add(JacksonJsonProvider.class);
-        Client client = Client.create(defaultClientConfig);
+        if (!merchantSites.isEmpty()) {
 
-        if (!hasMultipleMerchantSites()) {
-            //If there is only 1 merchant Site currently registered, get the first element in the Map
+            if (hasMultipleMerchantSites()) {
+                throw new TrustevApiException.MultipleMerchantSitesException();
+            }
+
             MerchantSite merchantSite = merchantSites.entrySet().iterator().next().getValue();
+            if (merchantSite.getUserName() != null && !merchantSite.getUserName().equals("")) {
 
-            WebResource resource = client.resource(merchantSite.getBaseUrlString()).path(uriPath);
-            Builder resourceBuilder = resource.getRequestBuilder();
+                return PerformHttpCall(uriPath, httpMethod, responseType, entity, isAuthenticationNeeded, merchantSite.getUserName());
 
-            if (isAuthenticationNeeded) {
-                resourceBuilder = resourceBuilder.header("X-Authorization", String.format("%1$s %2$s", merchantSite.getUserName(), getApiToken()));
-            }
-
-            resourceBuilder = resourceBuilder.accept(MediaType.APPLICATION_JSON);
-            resourceBuilder = resourceBuilder.type(MediaType.APPLICATION_JSON);
-            ClientResponse response;
-            response = resourceBuilder
-                    .method(httpMethod, ClientResponse.class, entity);
-
-            if (response.getStatus() == 200) {
-                responseObject = response.getEntity(responseType);
             } else {
-                ErrorResponse errorResponse = response.getEntity(ErrorResponse.class);
-
-                throw new TrustevApiException(response.getStatus(), errorResponse.Message);
+                throw new TrustevApiException.MerchantSiteNotSetupException();
             }
-
-            return responseObject;
         } else {
-            throw new TrustevApiException.MultipleMerchantSitesException();
+            throw new TrustevApiException.MerchantSiteNotSetupException();
         }
     }
 
@@ -1197,7 +1180,7 @@ public class ApiClient {
         defaultClientConfig.getClasses().add(JacksonJsonProvider.class);
         Client client = Client.create(defaultClientConfig);
 
-        if (hasMerchantSite(userName)) {
+        if (merchantSites.size() >= 1 && hasMerchantSite(userName)) {
             MerchantSite merchantSite = merchantSites.get(userName);
 
             WebResource resource = client.resource(merchantSite.getBaseUrlString()).path(uriPath);
@@ -1221,22 +1204,9 @@ public class ApiClient {
             }
 
             return responseObject;
+
         } else {
-            //Just for the time being ... need to decide how to handle edge cases where the userName provided is not in the Map of registered Merchants
             throw new TrustevApiException.MerchantSiteNotSetupException(userName);
-        }
-    }
-
-    private static String getApiToken() throws TrustevApiException {
-        if (!hasMultipleMerchantSites()) {
-            MerchantSite merchantSite = merchantSites.entrySet().iterator().next().getValue();
-            if (merchantSite.getApiToken() == null || merchantSite.getExpiryDate() == null || merchantSite.getExpiryDate().before(new Date())) {
-                SetToken();
-            }
-
-            return merchantSite.getApiToken();
-        } else {
-            throw new TrustevApiException.MultipleMerchantSitesException();
         }
     }
 
@@ -1250,20 +1220,6 @@ public class ApiClient {
             return merchantSite.getApiToken();
         } else {
             throw new TrustevApiException.MerchantSiteNotSetupException(username);
-        }
-    }
-
-    private static void SetToken() throws TrustevApiException {
-        String url = "/Token";
-
-        if (!hasMultipleMerchantSites()) {
-            MerchantSite merchantSite = merchantSites.entrySet().iterator().next().getValue();
-            TokenResponse response = (TokenResponse) PerformHttpCall(url, HttpMethod.POST, TokenResponse.class, new TokenRequest(merchantSite.getUserName()), false);
-
-            merchantSite.setApiToken(response.apiToken);
-            merchantSite.setExpiryDate(response.expireAt);
-        } else {
-            throw new TrustevApiException.MultipleMerchantSitesException();
         }
     }
 
@@ -1291,10 +1247,6 @@ public class ApiClient {
         private static String passwordHash;
         private static String userNameHash;
         private static String timestamp;
-
-        public TokenRequest() {
-            this.timestamp = FormatTimeStamp(new Date());
-        }
 
         public TokenRequest(String username) throws TrustevApiException {
             this.timestamp = FormatTimeStamp(new Date());

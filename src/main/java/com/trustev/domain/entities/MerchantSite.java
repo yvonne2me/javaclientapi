@@ -70,7 +70,7 @@ public class MerchantSite extends BaseObject {
         return baseUrlString;
     }
 
-    @JsonProperty("baseUrlString")
+    @JsonProperty("BaseUrlString")
     public void setBaseUrlString(String baseUrlString) {
         this.baseUrlString = baseUrlString;
     }
@@ -79,7 +79,7 @@ public class MerchantSite extends BaseObject {
         return baseUrl;
     }
 
-    @JsonProperty("baseUrl")
+    @JsonProperty("BaseUrl")
     public void setBaseUrl(BaseUrl baseUrl) {
         this.baseUrl = baseUrl;
     }
