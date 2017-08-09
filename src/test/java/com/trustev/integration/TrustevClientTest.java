@@ -104,20 +104,14 @@ public class TrustevClientTest {
         if (userName == null || password == null || secret == null || (baseUrl == null && alternateUrl == null)) {
             throw new Exception("Inexisting or invalid credentials provided.");
         }
-    }
 
-    @Before
-    public void testSetup() {
+        ApiClient.removeAllMerchantSites();
+
         if (alternateUrl != null && alternateUrl != "") {
             ApiClient.SetUp(userName, password, secret, alternateUrl);
         } else if (baseUrl != null) {
             ApiClient.SetUp(userName, password, secret, baseUrl);
         }
-    }
-
-    @After
-    public void testTeardown() {
-        ApiClient.removeAllMerchantSites();
     }
 
     @Test
