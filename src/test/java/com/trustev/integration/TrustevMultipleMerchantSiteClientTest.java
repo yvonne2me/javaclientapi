@@ -3,10 +3,7 @@ package com.trustev.integration;
 import com.trustev.domain.entities.*;
 import com.trustev.domain.exceptions.TrustevApiException;
 import com.trustev.web.ApiClient;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -23,6 +20,7 @@ public class TrustevMultipleMerchantSiteClientTest {
     // Set your test credentials and baseURL to run the integration tests
     // you can set these up on the config.properties file or run them as
     // command line parameters when using maven.
+    // Note: these tests will be ignored if a second set of credentials is not provided, or if the first and second sets are the same
     // Example : mvn clean test -DuserName=test-user -Dpassword=testpasswd -Dsecret=testSecret -Durl=US -DuserName2=test-user2 -Dpassword2=testpasswd2 -Dsecret2=testSecret2 -Durl2=US
 
     public static String userName;
@@ -40,9 +38,14 @@ public class TrustevMultipleMerchantSiteClientTest {
     public static MerchantSite merchantSite1;
     public static MerchantSite merchantSite2;
 
+    public static boolean isFirstOrSecondMerchantSiteNull;
+    public static boolean isFirstAndSecondMerchantSitesSame;
+
     //<editor-fold desc="Merchant Site Credential Setup">
     @BeforeClass
     public static void SetUpClass() throws Exception {
+        isFirstOrSecondMerchantSiteNull =false;
+        isFirstAndSecondMerchantSitesSame=false;
 
         // try to load parameters from the command line
         userName = System.getProperty("userName");
@@ -114,14 +117,26 @@ public class TrustevMultipleMerchantSiteClientTest {
             }
         }
 
-        if ((userName == null || password == null || secret == null || (baseUrl == null && alternateUrl == null)) &&
-                (userName2 == null || password2 == null || secret2 == null || (baseUrl2 == null && alternateUrl2 == null))) {
+        //Test if the First set of credentials is null ... just in case
+        if (userName == null || password == null || secret == null || (baseUrl == null && alternateUrl == null)) {
             throw new Exception("Inexisting or invalid credentials provided.");
         }
-    }
 
-    @Before
-    public void testSetup() {
+        //Test if the second set of credentials is null
+        if (userName2 == null || password2 == null || secret2 == null || (baseUrl2 == null && alternateUrl2 == null)){
+            isFirstOrSecondMerchantSiteNull=true;
+        } else if (userName2.equals("") || password2.equals("") || secret2.equals("")){
+            isFirstOrSecondMerchantSiteNull = true;
+        } else if (baseUrl2!=null && alternateUrl2!=null && (baseUrl2.equals("") && alternateUrl2.equals(""))) {
+            isFirstOrSecondMerchantSiteNull = true;
+        }
+
+        //Test if the first and second set of credentials are the same, based on username
+        if (userName2!=null && userName!=null && userName2.equals(userName)){
+            isFirstAndSecondMerchantSitesSame=true;
+        }
+
+        ApiClient.removeAllMerchantSites();
 
         if (alternateUrl != null && alternateUrl != "") {
             ApiClient.SetUp(userName, password, secret, alternateUrl);
@@ -138,9 +153,13 @@ public class TrustevMultipleMerchantSiteClientTest {
         }
     }
 
-    @After
-    public void testTeardown() {
-        ApiClient.removeAllMerchantSites();
+    @Before
+    public void testSetup() {
+        //If the second set of credentials is null, then this entire class of tests will be ignored
+        Assume.assumeFalse(isFirstOrSecondMerchantSiteNull);
+
+        //If the first and second set of credentials are the same, then the entire class of tests will be ignored
+        Assume.assumeFalse(isFirstAndSecondMerchantSitesSame);
     }
     //</editor-fold>
 
