@@ -245,6 +245,33 @@ public class ApiClient {
         DetailedDecision response = (DetailedDecision) PerformHttpCall(url, HttpMethod.GET, DetailedDecision.class, null, true);
         return response;
     }
+    /**
+     * Use this endpoint and HTTP method to Request OR Regenerate a OTP to a previously created Trustev Case.
+     *
+     * @param caseId The Id of a Case which you have already posted to the TrustevClient API.
+     * @param request Status request object
+     * @return digital auth object
+     * @throws TrustevApiException A Custom Trustev Api Exception
+     */
+    public static DigitalAuthenticationResult postOtp(String caseId, DigitalAuthenticationResult request) throws TrustevApiException {
+        String url = "/case/"+ caseId+"/authentication/otp" ;
+        DigitalAuthenticationResult response = (DigitalAuthenticationResult) PerformHttpCall(url, HttpMethod.POST, DigitalAuthenticationResult.class, request, true);
+        return response;
+    }
+    /**
+     * Use this endpoint and HTTP method to Request OR Verification a OTP to a previously created Trustev Case.
+     *
+     * @param caseId The Id of a Case which you have already posted to the TrustevClient API.
+     * @param request Status request object
+     * @return digital auth object
+     * @throws TrustevApiException A Custom Trustev Api Exception
+     */
+    public static DigitalAuthenticationResult putOtp(String caseId, DigitalAuthenticationResult request) throws TrustevApiException {
+        String url = "/case/"+ caseId+"/authentication/otp" ;
+        DigitalAuthenticationResult response = (DigitalAuthenticationResult) PerformHttpCall(url, HttpMethod.PUT, DigitalAuthenticationResult.class, request, true);
+        return response;
+    }
+
 
     /**
      * Gets a Detailed Decision on a Case with Id caseId.

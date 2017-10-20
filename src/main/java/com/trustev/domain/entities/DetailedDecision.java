@@ -17,6 +17,8 @@ public class DetailedDecision extends Decision{
     
 	@JsonProperty("ComputedData")
 	private ComputedData computedData;
+	@JsonProperty("Authentication")
+	private DigitalAuthenticationResult Authentication;
 	
 	public String getCaseNumber() {
 		return caseNumber;
@@ -48,5 +50,14 @@ public class DetailedDecision extends Decision{
 
 	public void setComputedData(ComputedData computedData) {
 		this.computedData = computedData;
+	}
+
+
+	public DigitalAuthenticationResult getAuthentication() {
+		return Authentication;
+	}
+
+	public void setAuthentication(DigitalAuthenticationResult authentication) {
+		Authentication = authentication;
 	}
 }
