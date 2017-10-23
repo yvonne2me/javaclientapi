@@ -4,7 +4,7 @@
 - If you are not familiar with Trustev, start with our [Developer Portal](http://www.trustev.com/developers).
 - Check out our [API Documentation](http://www.trustev.com/developers#apioverview).
 - If you would like to get some Test API Keys to begin Integrating, please contact our Integration Team: integrate@trustev.com
-- **New in version 2.0.9**: Multiple user credentials can be added to the same ApiClient. See  secion *Simple Trustev Integration for More than One Credential Set* below for details.
+- **New in version 2.0.10**: OTP support
 
 ##Requirements
 - Java 1.6 +
