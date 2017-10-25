@@ -171,6 +171,22 @@ public class Case extends BaseObject{
 		this.locationConsentId = locationConsentId;
 	}
 
+	/**
+	 * @return the Fulfilment object
+	 */
+	@JsonProperty("Fulfilment")
+	public Fulfilment getFulfilment() {
+		return fulfilment;
+	}
+
+	/**
+	 * @param fulfilment to set in the case
+	 */
+	@JsonProperty("Fulfilment")
+	public void setFulfilment(Fulfilment fulfilment) {
+		this.fulfilment = fulfilment;
+	}
+
 	private UUID sessionId;
 	
 	private String caseNumber;
@@ -188,4 +204,6 @@ public class Case extends BaseObject{
 	private CaseType caseType;
 	
 	private String locationConsentId;
+
+	private Fulfilment fulfilment;
 }

@@ -4,7 +4,7 @@
 - If you are not familiar with Trustev, start with our [Developer Portal](http://www.trustev.com/developers).
 - Check out our [API Documentation](http://www.trustev.com/developers#apioverview).
 - If you would like to get some Test API Keys to begin Integrating, please contact our Integration Team: integrate@trustev.com
-- **New in version 2.0.10**: OTP support
+- **New in version 2.0.11**: support for the new Fulfilment object
 
 ##Requirements
 - Java 1.6 +
@@ -16,7 +16,7 @@
   <dependency>
 	<groupId>com.trustev</groupId>
   	<artifactId>trustev-java</artifactId>
-  	<version>2.0.10</version>
+  	<version>2.0.11</version>
   </dependency>
 ```
 

@@ -118,6 +118,31 @@ public class TrustevClientTest {
         assertEquals("John", responseCase.getCustomer().getFirstName());
         assertEquals("Doe", responseCase.getCustomer().getLastName());
     }
+    @Test
+    public void testAddFulfilmentToCase() throws TrustevApiException {
+
+        Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+        Customer customer = new Customer();
+        customer.setFirstName("John");
+        customer.setLastName("Doe");
+        kase.setCustomer(customer);
+        Fulfilment fulfilment= new Fulfilment();
+        fulfilment.setFulfilmentGeoLocation(FulfilmentGeoLocation.National);
+        fulfilment.setFulfilmentMethod(FulfilmentMethod.Courier);
+        fulfilment.setTimeToFulfilment(TimeToFulfilment.SameDay);
+        kase.setFulfilment(fulfilment);
+
+        Case responseCase = ApiClient.postCase(kase);
+
+        assertNotNull(responseCase.getId());
+        assertNotNull(responseCase.getCustomer());
+        assertNotNull(responseCase.getCustomer().getId());
+        assertEquals("John", responseCase.getCustomer().getFirstName());
+        assertEquals("Doe", responseCase.getCustomer().getLastName());
+        assertEquals(FulfilmentGeoLocation.National, responseCase.getFulfilment().getFulfilmentGeoLocation());
+        assertEquals(FulfilmentMethod.Courier, responseCase.getFulfilment().getFulfilmentMethod());
+        assertEquals(TimeToFulfilment.SameDay, responseCase.getFulfilment().getTimeToFulfilment());
+    }
 
 
     /******************************Case Tests**************************************/
