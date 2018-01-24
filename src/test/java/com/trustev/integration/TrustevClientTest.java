@@ -459,7 +459,7 @@ public class TrustevClientTest {
 
         verifyPassword.setOtp(otpPassword);
         DigitalAuthenticationResult verify=ApiClient.putOtp(responseCase.getId(), verifyPassword);
-        assertEquals(verify.getOtp().getMessage(),"Passcodes don't match.");
+        assertEquals(verify.getOtp().getMessage(),"OTP Offered And Failed");
     }
 
 
