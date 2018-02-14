@@ -11,12 +11,25 @@ import java.util.LinkedList;
 import java.util.Properties;
 import java.util.UUID;
 
-import com.trustev.domain.entities.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.trustev.domain.entities.Address;
+import com.trustev.domain.entities.BaseUrl;
+import com.trustev.domain.entities.Case;
+import com.trustev.domain.entities.CaseStatus;
+import com.trustev.domain.entities.CaseStatusType;
+import com.trustev.domain.entities.CaseType;
+import com.trustev.domain.entities.Customer;
+import com.trustev.domain.entities.Decision;
+import com.trustev.domain.entities.DecisionResult;
+import com.trustev.domain.entities.DetailedDecision;
+import com.trustev.domain.entities.Email;
+import com.trustev.domain.entities.Payment;
+import com.trustev.domain.entities.Transaction;
+import com.trustev.domain.entities.TransactionItem;
 import com.trustev.domain.exceptions.TrustevApiException;
 import com.trustev.web.ApiClient;
 
@@ -117,31 +130,6 @@ public class TrustevClientTest {
         assertNotNull(responseCase.getCustomer().getId());
         assertEquals("John", responseCase.getCustomer().getFirstName());
         assertEquals("Doe", responseCase.getCustomer().getLastName());
-    }
-    @Test
-    public void testAddFulfilmentToCase() throws TrustevApiException {
-
-        Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
-        Customer customer = new Customer();
-        customer.setFirstName("John");
-        customer.setLastName("Doe");
-        kase.setCustomer(customer);
-        Fulfilment fulfilment= new Fulfilment();
-        fulfilment.setFulfilmentGeoLocation(FulfilmentGeoLocation.National);
-        fulfilment.setFulfilmentMethod(FulfilmentMethod.Courier);
-        fulfilment.setTimeToFulfilment(TimeToFulfilment.SameDay);
-        kase.setFulfilment(fulfilment);
-
-        Case responseCase = ApiClient.postCase(kase);
-
-        assertNotNull(responseCase.getId());
-        assertNotNull(responseCase.getCustomer());
-        assertNotNull(responseCase.getCustomer().getId());
-        assertEquals("John", responseCase.getCustomer().getFirstName());
-        assertEquals("Doe", responseCase.getCustomer().getLastName());
-        assertEquals(FulfilmentGeoLocation.National, responseCase.getFulfilment().getFulfilmentGeoLocation());
-        assertEquals(FulfilmentMethod.Courier, responseCase.getFulfilment().getFulfilmentMethod());
-        assertEquals(TimeToFulfilment.SameDay, responseCase.getFulfilment().getTimeToFulfilment());
     }
 
 
@@ -396,74 +384,6 @@ public class TrustevClientTest {
 
 
     /***************************End Detailed Decision Tests******************************/
-
-    /*****************************OTP Tests***************************/
-    @Test
-    public void testSentOtp() throws TrustevApiException {
-
-        Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
-        Customer customer = new Customer();
-        customer.setFirstName("John");
-        customer.setLastName("Doe");
-        //change this to a correct number
-        customer.setPhoneNumber("353878767543");
-        kase.setCustomer(customer);
-
-        Case responseCase = ApiClient.postCase(kase);
-
-        DetailedDecision decision = ApiClient.getDetailedDecision(responseCase.getId());
-        assertEquals(decision.getAuthentication().getOtp().getStatus(), OTPStatus.Offered);
-        DigitalAuthenticationResult auth = new DigitalAuthenticationResult();
-        OTPResult otp = new OTPResult(responseCase.getId());
-        otp.setDeliveryType(PhoneDeliveryType.Sms);
-        otp.setLanguage(OTPLanguageEnum.EN);
-
-        auth.setOtp(otp);
-        DigitalAuthenticationResult check=ApiClient.postOtp(responseCase.getId(), auth);
-        assertEquals(check.getOtp().getStatus(),OTPStatus.InProgress);
-
-    }
-
-
-    @Test
-    public void testVerifyOtp() throws TrustevApiException {
-
-        Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
-        Customer customer = new Customer();
-        customer.setFirstName("John");
-        customer.setLastName("Doe");
-        //change this to a correct number
-        customer.setPhoneNumber("353878767543");
-        kase.setCustomer(customer);
-
-        Case responseCase = ApiClient.postCase(kase);
-
-        DetailedDecision decision = ApiClient.getDetailedDecision(responseCase.getId());
-        assertEquals(decision.getAuthentication().getOtp().getStatus(), OTPStatus.Offered);
-        DigitalAuthenticationResult auth = new DigitalAuthenticationResult();
-        OTPResult otp = new OTPResult(responseCase.getId());
-        otp.setDeliveryType(PhoneDeliveryType.Sms);
-        otp.setLanguage(OTPLanguageEnum.EN);
-
-        auth.setOtp(otp);
-        DigitalAuthenticationResult check=ApiClient.postOtp(responseCase.getId(), auth);
-        assertEquals(check.getOtp().getStatus(),OTPStatus.InProgress);
-
-        DigitalAuthenticationResult verifyPassword = new DigitalAuthenticationResult();
-        OTPResult otpPassword = new OTPResult(responseCase.getId());
-        otpPassword.setDeliveryType(PhoneDeliveryType.Sms);
-        otpPassword.setLanguage(OTPLanguageEnum.EN);
-        otpPassword.setStatus(OTPStatus.InProgress);
-        //make sure that you edit this with the code received from the sms
-        otpPassword.setPasscode("12345");
-
-        verifyPassword.setOtp(otpPassword);
-        DigitalAuthenticationResult verify=ApiClient.putOtp(responseCase.getId(), verifyPassword);
-        assertEquals(verify.getOtp().getMessage(),"OTP Offered And Failed");
-    }
-
-
-    /***************************End OTP Tests******************************/
 
 
     /*****************************Customer Object Tests**********************************/
