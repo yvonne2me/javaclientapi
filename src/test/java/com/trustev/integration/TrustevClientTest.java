@@ -1,8 +1,6 @@
 package com.trustev.integration;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -11,8 +9,6 @@ import java.util.LinkedList;
 import java.util.Properties;
 import java.util.UUID;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -87,7 +83,7 @@ public class TrustevClientTest {
                 alternateUrl = prop.getProperty("altUrl");
                 baseUrlString = prop.getProperty("url");
 
-                if (baseUrlString != null && !baseUrlString.equals("") && (baseUrlString.equals("US") || baseUrlString.equals("EU"))) {
+                if (baseUrlString != null && !baseUrlString.equals("") && (baseUrlString.equals("US") || baseUrlString.equals("EU")|| baseUrlString.equals("QA") )) {
                     baseUrl = BaseUrl.valueOf(baseUrlString);
                 }
 
@@ -257,6 +253,20 @@ public class TrustevClientTest {
         assertEquals(CaseType.Application, responseCase.getCaseType());
     }
 
+    @Test
+    public void testADRCaseTypePost() throws TrustevApiException {
+
+        Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+        Customer customer = new Customer();
+        customer.setFirstName("Aaron");
+        customer.setLastName("Joe");
+        kase.setCustomer(customer);
+        kase.setCaseType(CaseType.ADR);
+
+        Case responseCase = ApiClient.postCase(kase);
+
+        assertEquals(CaseType.ADR, responseCase.getCaseType());
+    }
     /******************************End of Case Tests**************************************/
 
 
@@ -563,7 +573,6 @@ public class TrustevClientTest {
 
         CaseStatus caseStatus = new CaseStatus();
         caseStatus.setComment("Testing Status!!");
-        caseStatus.setStatus(CaseStatusType.Completed);
 
         ApiClient.postCaseStatus(responseCase.getId(), caseStatus);
 
@@ -571,6 +580,155 @@ public class TrustevClientTest {
         Collection<CaseStatus> returnStatuses = ApiClient.getCaseStatuses(responseCase.getId());
 
         assertTrue(returnStatuses.size() > 1);
+    }
+
+
+    @Test
+    public void testUpdateCaseStatusAto() throws TrustevApiException {
+
+        Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+        Case responseCase = ApiClient.postCase(kase);
+
+        responseCase.getStatuses().iterator().next().setStatus(CaseStatusType.AccountTakeOver);
+        responseCase.getStatuses().iterator().next().setIsUpdated(true);
+
+        CaseStatus updateCaseStatus = new CaseStatus();
+        updateCaseStatus.setComment("Testing Case Status - Ato");
+        updateCaseStatus.setStatus(CaseStatusType.AccountTakeOver);
+        updateCaseStatus.setIsUpdated(true);
+
+        CaseStatus responseCaseStatus = ApiClient.postCaseStatus(responseCase.getId(),responseCase.getStatuses().iterator().next(), userName);
+
+        assertNotNull(responseCaseStatus.getStatus());
+        assertEquals(CaseStatusType.AccountTakeOver, responseCaseStatus.getStatus());
+    }
+
+    @Test
+    public void testUpdateCaseStatusAtoChargeback() throws TrustevApiException {
+
+        Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+        Case responseCase = ApiClient.postCase(kase);
+
+        CaseStatus updateCaseStatus = new CaseStatus();
+        updateCaseStatus.setComment("Testing Case Status - Ato Chargeback");
+        updateCaseStatus.setStatus(CaseStatusType.AccountTakeOverChargeBack);
+
+        CaseStatus responseCaseStatus = ApiClient.postCaseStatus(responseCase.getId(), updateCaseStatus, userName);
+
+        assertNotNull(responseCaseStatus.getStatus());
+        assertEquals(CaseStatusType.AccountTakeOverChargeBack, responseCaseStatus.getStatus());
+    }
+
+    @Test
+    public void testUpdateCaseStatusCompleted() throws TrustevApiException {
+
+        Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+        Case responseCase = ApiClient.postCase(kase);
+
+        CaseStatus updateCaseStatus = new CaseStatus();
+        updateCaseStatus.setComment("Testing Case Status - Completed");
+        updateCaseStatus.setStatus(CaseStatusType.Completed);
+
+        CaseStatus responseCaseStatus = ApiClient.postCaseStatus(responseCase.getId(), updateCaseStatus, userName);
+
+        assertNotNull(responseCaseStatus.getStatus());
+        assertEquals(CaseStatusType.Completed, responseCaseStatus.getStatus());
+    }
+
+    @Test
+    public void testUpdateCaseStatusChargebackFraud() throws TrustevApiException {
+
+        Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+        Case responseCase = ApiClient.postCase(kase);
+
+        CaseStatus updateCaseStatus = new CaseStatus();
+        updateCaseStatus.setComment("Testing Case Status - Chargeback Fraud");
+        updateCaseStatus.setStatus(CaseStatusType.ChargebackFraud);
+
+        CaseStatus responseCaseStatus = ApiClient.postCaseStatus(responseCase.getId(), updateCaseStatus, userName);
+
+        assertNotNull(responseCaseStatus.getStatus());
+        assertEquals(CaseStatusType.ChargebackFraud, responseCaseStatus.getStatus());
+    }
+
+    @Test
+    public void testUpdateCaseStatusChargebackOther() throws TrustevApiException {
+
+        Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+        Case responseCase = ApiClient.postCase(kase);
+
+        CaseStatus updateCaseStatus = new CaseStatus();
+        updateCaseStatus.setComment("Testing Case Status - Chargeback Other");
+        updateCaseStatus.setStatus(CaseStatusType.ChargebackOther);
+
+        CaseStatus responseCaseStatus = ApiClient.postCaseStatus(responseCase.getId(), updateCaseStatus, userName);
+
+        assertNotNull(responseCaseStatus.getStatus());
+        assertEquals(CaseStatusType.ChargebackOther, responseCaseStatus.getStatus());
+    }
+
+    @Test
+    public void testUpdateCaseStatusOnHoldReview() throws TrustevApiException {
+
+        Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+        Case responseCase = ApiClient.postCase(kase);
+
+        CaseStatus updateCaseStatus = new CaseStatus();
+        updateCaseStatus.setComment("Testing Case Status - On Hold Review");
+        updateCaseStatus.setStatus(CaseStatusType.OnHoldReview);
+
+        CaseStatus responseCaseStatus = ApiClient.postCaseStatus(responseCase.getId(), updateCaseStatus, userName);
+
+        assertNotNull(responseCaseStatus.getStatus());
+        assertEquals(CaseStatusType.OnHoldReview, responseCaseStatus.getStatus());
+    }
+
+    @Test
+    public void testUpdateCaseStatusRefunded() throws TrustevApiException {
+
+        Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+        Case responseCase = ApiClient.postCase(kase);
+
+        CaseStatus updateCaseStatus = new CaseStatus();
+        updateCaseStatus.setComment("Testing Case Status - Refunded");
+        updateCaseStatus.setStatus(CaseStatusType.Refunded);
+
+        CaseStatus responseCaseStatus = ApiClient.postCaseStatus(responseCase.getId(),updateCaseStatus,userName);
+
+        assertNotNull(responseCaseStatus.getStatus());
+        assertEquals(CaseStatusType.Refunded, responseCaseStatus.getStatus());
+    }
+
+    @Test
+    public void testUpdateCaseStatusPlaced() throws TrustevApiException {
+
+        Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+        Case responseCase = ApiClient.postCase(kase);
+
+        CaseStatus updateCaseStatus = new CaseStatus();
+        updateCaseStatus.setComment("Testing Case Status - Placed");
+        updateCaseStatus.setStatus(CaseStatusType.Placed);
+
+        CaseStatus responseCaseStatus = ApiClient.postCaseStatus(responseCase.getId(), updateCaseStatus, userName);
+
+        assertNotNull(responseCaseStatus.getStatus());
+        assertEquals(CaseStatusType.Placed, responseCaseStatus.getStatus());
+    }
+
+    @Test
+    public void testUpdateCaseStatusCancelled() throws TrustevApiException {
+
+        Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+        Case responseCase = ApiClient.postCase(kase);
+
+        CaseStatus updateCaseStatus = new CaseStatus();
+        updateCaseStatus.setComment("Testing Case Status - Cancelled");
+        updateCaseStatus.setStatus(CaseStatusType.Cancelled);
+
+        CaseStatus responseCaseStatus = ApiClient.postCaseStatus(responseCase.getId(), updateCaseStatus, userName);
+
+        assertNotNull(responseCaseStatus.getStatus());
+        assertEquals(CaseStatusType.Cancelled, responseCaseStatus.getStatus());
     }
 
     @Test

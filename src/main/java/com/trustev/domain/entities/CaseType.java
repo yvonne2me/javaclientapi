@@ -12,7 +12,7 @@ import org.codehaus.jackson.map.deser.StdDeserializer;
 @JsonDeserialize(using = CaseType.CaseTypeDeserializer.class)
 public enum CaseType {
 
-	Default(0), AccountCreation(2), Application(3);
+	Default(0), AccountCreation(2), Application(3), ADR(4);
 	
 	private int numVal;
 	
@@ -48,6 +48,9 @@ public enum CaseType {
 				break;
 			case 3:
 				type = CaseType.Application;
+				break;
+			case 4:
+				type = CaseType.ADR;
 				break;
 			default:
 				return null;

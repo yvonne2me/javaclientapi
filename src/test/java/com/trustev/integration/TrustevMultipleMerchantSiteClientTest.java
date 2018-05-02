@@ -624,6 +624,154 @@ public class TrustevMultipleMerchantSiteClientTest {
     }
 
     @Test
+    public void testUpdateCaseStatusAto() throws TrustevApiException {
+
+        Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+        Case responseCase = ApiClient.postCase(kase, merchantSite1.getUserName());
+
+        responseCase.getStatuses().iterator().next().setStatus(CaseStatusType.AccountTakeOver);
+        responseCase.getStatuses().iterator().next().setIsUpdated(true);
+
+        CaseStatus updateCaseStatus = new CaseStatus();
+        updateCaseStatus.setComment("Testing Case Status - Ato");
+        updateCaseStatus.setStatus(CaseStatusType.AccountTakeOver);
+        updateCaseStatus.setIsUpdated(true);
+
+        CaseStatus responseCaseStatus = ApiClient.postCaseStatus(responseCase.getId(),responseCase.getStatuses().iterator().next(), merchantSite1.getUserName());
+
+        assertNotNull(responseCaseStatus.getStatus());
+        assertEquals(CaseStatusType.AccountTakeOver, responseCaseStatus.getStatus());
+    }
+
+    @Test
+    public void testUpdateCaseStatusAtoChargeback() throws TrustevApiException {
+
+        Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+        Case responseCase = ApiClient.postCase(kase, merchantSite1.getUserName());
+
+        CaseStatus updateCaseStatus = new CaseStatus();
+        updateCaseStatus.setComment("Testing Case Status - Ato Chargeback");
+        updateCaseStatus.setStatus(CaseStatusType.AccountTakeOverChargeBack);
+
+        CaseStatus responseCaseStatus = ApiClient.postCaseStatus(responseCase.getId(), updateCaseStatus, merchantSite1.getUserName());
+
+        assertNotNull(responseCaseStatus.getStatus());
+        assertEquals(CaseStatusType.AccountTakeOverChargeBack, responseCaseStatus.getStatus());
+    }
+
+    @Test
+    public void testUpdateCaseStatusCompleted() throws TrustevApiException {
+
+        Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+        Case responseCase = ApiClient.postCase(kase, merchantSite1.getUserName());
+
+        CaseStatus updateCaseStatus = new CaseStatus();
+        updateCaseStatus.setComment("Testing Case Status - Completed");
+        updateCaseStatus.setStatus(CaseStatusType.Completed);
+
+        CaseStatus responseCaseStatus = ApiClient.postCaseStatus(responseCase.getId(), updateCaseStatus, merchantSite1.getUserName());
+
+        assertNotNull(responseCaseStatus.getStatus());
+        assertEquals(CaseStatusType.Completed, responseCaseStatus.getStatus());
+    }
+
+    @Test
+    public void testUpdateCaseStatusChargebackFraud() throws TrustevApiException {
+
+        Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+        Case responseCase = ApiClient.postCase(kase, merchantSite1.getUserName());
+
+        CaseStatus updateCaseStatus = new CaseStatus();
+        updateCaseStatus.setComment("Testing Case Status - Chargeback Fraud");
+        updateCaseStatus.setStatus(CaseStatusType.ChargebackFraud);
+
+        CaseStatus responseCaseStatus = ApiClient.postCaseStatus(responseCase.getId(), updateCaseStatus, merchantSite1.getUserName());
+
+        assertNotNull(responseCaseStatus.getStatus());
+        assertEquals(CaseStatusType.ChargebackFraud, responseCaseStatus.getStatus());
+    }
+
+    @Test
+    public void testUpdateCaseStatusChargebackOther() throws TrustevApiException {
+
+        Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+        Case responseCase = ApiClient.postCase(kase, merchantSite1.getUserName());
+
+        CaseStatus updateCaseStatus = new CaseStatus();
+        updateCaseStatus.setComment("Testing Case Status - Chargeback Other");
+        updateCaseStatus.setStatus(CaseStatusType.ChargebackOther);
+
+        CaseStatus responseCaseStatus = ApiClient.postCaseStatus(responseCase.getId(), updateCaseStatus, merchantSite1.getUserName());
+
+        assertNotNull(responseCaseStatus.getStatus());
+        assertEquals(CaseStatusType.ChargebackOther, responseCaseStatus.getStatus());
+    }
+
+    @Test
+    public void testUpdateCaseStatusOnHoldReview() throws TrustevApiException {
+
+        Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+        Case responseCase = ApiClient.postCase(kase, merchantSite1.getUserName());
+
+        CaseStatus updateCaseStatus = new CaseStatus();
+        updateCaseStatus.setComment("Testing Case Status - On Hold Review");
+        updateCaseStatus.setStatus(CaseStatusType.OnHoldReview);
+
+        CaseStatus responseCaseStatus = ApiClient.postCaseStatus(responseCase.getId(), updateCaseStatus, userName);
+
+        assertNotNull(responseCaseStatus.getStatus());
+        assertEquals(CaseStatusType.OnHoldReview, responseCaseStatus.getStatus());
+    }
+
+    @Test
+    public void testUpdateCaseStatusRefunded() throws TrustevApiException {
+
+        Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+        Case responseCase = ApiClient.postCase(kase, merchantSite1.getUserName());
+
+        CaseStatus updateCaseStatus = new CaseStatus();
+        updateCaseStatus.setComment("Testing Case Status - Refunded");
+        updateCaseStatus.setStatus(CaseStatusType.Refunded);
+
+        CaseStatus responseCaseStatus = ApiClient.postCaseStatus(responseCase.getId(),updateCaseStatus,merchantSite1.getUserName());
+
+        assertNotNull(responseCaseStatus.getStatus());
+        assertEquals(CaseStatusType.Refunded, responseCaseStatus.getStatus());
+    }
+
+    @Test
+    public void testUpdateCaseStatusPlaced() throws TrustevApiException {
+
+        Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+        Case responseCase = ApiClient.postCase(kase, merchantSite1.getUserName());
+
+        CaseStatus updateCaseStatus = new CaseStatus();
+        updateCaseStatus.setComment("Testing Case Status - Placed");
+        updateCaseStatus.setStatus(CaseStatusType.Placed);
+
+        CaseStatus responseCaseStatus = ApiClient.postCaseStatus(responseCase.getId(), updateCaseStatus, merchantSite1.getUserName());
+
+        assertNotNull(responseCaseStatus.getStatus());
+        assertEquals(CaseStatusType.Placed, responseCaseStatus.getStatus());
+    }
+
+    @Test
+    public void testUpdateCaseStatusCancelled() throws TrustevApiException {
+
+        Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+        Case responseCase = ApiClient.postCase(kase, merchantSite1.getUserName());
+
+        CaseStatus updateCaseStatus = new CaseStatus();
+        updateCaseStatus.setComment("Testing Case Status - Cancelled");
+        updateCaseStatus.setStatus(CaseStatusType.Cancelled);
+
+        CaseStatus responseCaseStatus = ApiClient.postCaseStatus(responseCase.getId(), updateCaseStatus, merchantSite1.getUserName());
+
+        assertNotNull(responseCaseStatus.getStatus());
+        assertEquals(CaseStatusType.Cancelled, responseCaseStatus.getStatus());
+    }
+
+    @Test
     public void testGetInexistingCaseStatuses() throws TrustevApiException {
         int responseCode = 200;
         try {
@@ -1271,6 +1419,20 @@ public class TrustevMultipleMerchantSiteClientTest {
         assertEquals(CaseType.Application, responseCase.getCaseType());
     }
 
+    @Test
+    public void testADRCaseTypePostSecondMerchantSite() throws TrustevApiException {
+
+        Case kase = new Case(UUID.randomUUID(), UUID.randomUUID().toString());
+        Customer customer = new Customer();
+        customer.setFirstName("Aaron");
+        customer.setLastName("Joe");
+        kase.setCustomer(customer);
+        kase.setCaseType(CaseType.ADR);
+
+        Case responseCase = ApiClient.postCase(kase, merchantSite2.getUserName());
+
+        assertEquals(CaseType.ADR, responseCase.getCaseType());
+    }
     /******************************End of Case Tests**************************************/
 
 

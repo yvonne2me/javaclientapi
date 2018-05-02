@@ -11,7 +11,7 @@ import org.codehaus.jackson.map.deser.StdDeserializer;
 
 @JsonDeserialize(using = CaseStatusType.CaseStatusTypeDeserializer.class)
 public enum CaseStatusType {
-	Completed(0), RejectedFraud(1), RejectedAuthFailure(2), RejectedSuspicious(3), Cancelled(4), ChargebackFraud(5), ChargebackOther(6), Refunded(7), Placed(8), OnHoldReview(9), ReportedFraud(12);
+	Completed(0), RejectedFraud(1), RejectedAuthFailure(2), RejectedSuspicious(3), Cancelled(4), ChargebackFraud(5), ChargebackOther(6), Refunded(7), Placed(8), OnHoldReview(9), ReportedFraud(12), AccountTakeOver(13), AccountTakeOverChargeBack(14);
 	
 	private int numVal;
 	
@@ -66,6 +66,12 @@ public enum CaseStatusType {
 				break;
 			case 12:
 				type = CaseStatusType.ReportedFraud;
+				break;
+			case 13:
+				type = CaseStatusType.AccountTakeOver;
+				break;
+			case 14:
+				type = CaseStatusType.AccountTakeOverChargeBack;
 				break;
 			default:
 				return null;

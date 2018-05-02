@@ -16,23 +16,39 @@ public class CaseStatus extends BaseObject {
 	private CaseStatusType status;
 	private String comment;
 	private Date timestamp;
-	
-		
+	private String id;
+	private boolean isUpdated;
+
 	/**
-	 * @return The Status Type of the Trustev Case
+	 * @return Id of the Status
 	 */
 	public CaseStatusType getStatus() {
 		return status;
 	}
-	
-	/**
-	 * @param status The Status Type of the Trustev Case
+
+    /**
+     * @param status The Status Type of the Trustev Case
+     */
+    @JsonProperty("Status")
+    public void setStatus(CaseStatusType status) {
+        this.status = status;
+    }
+
+    /**
+	 * @param id Id of the Status
 	 */
-	@JsonProperty("Status")
-	public void setStatus(CaseStatusType status) {
-		this.status = status;
+	@JsonProperty("Id")
+	public void setId(String id) {
+		this.id = id;
 	}
-	
+
+	/**
+	 * @return Id of the Status
+	 */
+	public String getId() {
+		return id;
+	}
+
 	/**
 	 * @return Comment on the Status
 	 */
@@ -47,7 +63,22 @@ public class CaseStatus extends BaseObject {
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
-	
+
+    /**
+     * @return Update status on the Status
+     */
+    public boolean getIsUpdated() {
+        return isUpdated;
+    }
+
+    /**
+     * @param isUpdated Update status on the Status
+     */
+    @JsonProperty("IsUpdated")
+    public void setIsUpdated(boolean isUpdated) {
+        this.isUpdated = isUpdated;
+    }
+
 	/**
 	 * @return Current Timestamp
 	 */
